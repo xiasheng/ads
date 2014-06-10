@@ -1,0 +1,22 @@
+
+
+<VirtualHost *:80>
+
+        DocumentRoot /var/www/ads/ads
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        WSGIScriptAlias / "/var/www/ads/apache/django.wsgi"
+        <Directory />
+                Order deny,allow
+                Allow from all
+        </Directory>
+
+
+</VirtualHost>
