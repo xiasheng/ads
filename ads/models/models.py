@@ -91,3 +91,18 @@ class Adwo(models.Model):
     point = models.CharField(max_length=128, null=True)
     ts = models.CharField(max_length=128, null=True)
 
+
+class Youmi(models.Model):
+    type = models.CharField(max_length=32, null=True)
+    order = models.CharField(max_length=128, null=True)
+    app = models.CharField(max_length=128, null=True)
+    ad = models.CharField(max_length=128, null=True)
+    adid = models.CharField(max_length=128, null=True)
+    user = models.CharField(max_length=128, null=True)
+    device = models.CharField(max_length=128, null=True)
+    chn = models.CharField(max_length=128, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=4, default=0)
+    point = models.IntegerField(default=0)
+    time = models.IntegerField(default=0)
+    #time_created = models.IntegerField(default=int(time.time()))
+
