@@ -117,7 +117,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/var/log/django/debug.log',
+            'filename': '/var/log/django/ads.log',
             'formatter': 'verbose',
         },
     },
@@ -138,5 +138,7 @@ LOGGING = {
 
 # email config
 EMAIL_HOST='smtp.exmail.qq.com'
-EMAIL_HOST_USER='xia.sheng@d-connected.com'
-EMAIL_HOST_PASSWORD='xxxx123456'
+EMAIL_HOST_USER='service@d-connected.com'
+EMAIL_HOST_PASSWORD='sv_456123'
+EMAIL_RECIPIENTS=['xia.sheng@d-connected.com']
+

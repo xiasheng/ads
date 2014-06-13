@@ -24,12 +24,12 @@ def InitChannels(request):
 
 def GetChannels(request):
     ret = {}
-    ret['channles'] = []
+    ret['channels'] = []
 
     try:    
         channels =  Channel.objects.all()
         for c in channels:
-            ret['channles'].append(c.toJSON())
+            ret['channels'].append(c.toJSON())
 
         return SuccessResponse(ret)
     except:

@@ -1,12 +1,16 @@
 
-import os, shutil
-
+import os
 
 # create log file
-os.mkdir('/var/log/django')
-os.mknod('/var/log/django/debug.log', mode=0777)
+log_filename = 'ads.log'
+log_dir = '/var/log/django'
+log_file = os.path.join(log_dir, log_filename)
 
-# init memcached
-#os.system('killall memcached') 
-#os.system('memcached -d')
+if not os.path.exists(log_dir):
+    os.mkdir(log_dir, 0777)
+    
+if not os.path.exists(log_file):
+    os.mknod(log_file, 0777)
+    os.chmod(log_file, 0777)
+
 

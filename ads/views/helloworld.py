@@ -2,5 +2,5 @@
 from django.http import HttpResponse
 
 def hello(request):
-    return HttpResponse("Hello world")
+    return HttpResponse("Hello world " + request.get_host())
 

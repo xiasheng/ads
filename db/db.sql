@@ -1,3 +1,3 @@
 
-drop database if exists abcdefg;
-create database abcdefg;
+drop database if exists ads;
+create database ads;
