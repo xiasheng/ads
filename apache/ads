@@ -19,5 +19,11 @@ ServerName *:80
                 Allow from all
         </Directory>
 
+         Alias /res /var/www/ads/res
+        <Directory "/var/www/ads/res">
+               Options  FollowSymLinks
+               Order deny,allow
+               Allow from all
+        </Directory>
 
 </VirtualHost>

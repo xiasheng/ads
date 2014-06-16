@@ -72,6 +72,7 @@ class Channel(models.Model):
     code = models.CharField(max_length=64, null=True)
     description = models.CharField(max_length=1024, null=True)
     name = models.CharField(max_length=64, null=True)
+    image = models.CharField(max_length=128, null=True)
     order = models.IntegerField(default=0)    
         
     def toJSON(self):
@@ -79,6 +80,7 @@ class Channel(models.Model):
         r['code'] = str(self.code)
         r['description'] = self.description
         r['name'] = self.name
+        r['image'] = self.image
         r['order'] = self.order
         return r
 
