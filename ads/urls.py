@@ -7,7 +7,9 @@ from views.channel import GetChannels, InitChannels
 from views.point import GetPoint, GetPointRecord
 from views.version import HasNewVersion
 from views.exchange import ExTelPhone, ExQb, ExAlipay, ExRecord, ExConfirm
-from views.callback import cb_adwo, cb_youmi_ios, cb_youmi_android
+from views.cb_adwo import cb_adwo_ios, cb_adwo_android, show_adwo
+from views.cb_youmi import cb_youmi_ios, cb_youmi_android, show_youmi
+
 
 urlpatterns = patterns('',
 
@@ -27,7 +29,12 @@ urlpatterns = patterns('',
 
     url(r'^top/score/$', GetTopUser),
     url(r'^version/hasnew/$', HasNewVersion),
-    url(r'^callback/adwo/ios/$', cb_adwo),
-    url(r'^callback/youmi/ios/$', cb_youmi_ios),
-    url(r'^callback/youmi/android/$', cb_youmi_android),
+
+    url(r'^callback/adwo/ios$', cb_adwo_ios),
+    url(r'^callback/adwo/android$', cb_adwo_android),
+    url(r'^callback/adwo/show$', show_adwo),
+
+    url(r'^callback/youmi/ios$', cb_youmi_ios),
+    url(r'^callback/youmi/android$', cb_youmi_android),
+    url(r'^callback/youmi/show$', show_youmi),
 )

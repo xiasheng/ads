@@ -90,9 +90,23 @@ class Adwo(models.Model):
     adid = models.CharField(max_length=128, null=True)
     device = models.CharField(max_length=128, null=True)
     idfa = models.CharField(max_length=128, null=True)
-    point = models.CharField(max_length=128, null=True)
-    ts = models.CharField(max_length=128, null=True)
-
+    androidid = models.CharField(max_length=128, null=True)
+    imei = models.CharField(max_length=128, null=True)
+    point = models.IntegerField(default=0)
+    ts = models.IntegerField(default=0)
+    
+    def toJSON(self):
+        r = {}
+        r['appid'] = self.appid
+        r['adname'] = self.adname
+        r['adid'] = self.adid
+        r['device'] = self.device
+        r['idfa'] = self.idfa
+        r['androidid'] = self.androidid
+        r['imei'] = self.imei
+        r['point'] = self.point
+        r['ts'] = self.ts
+        return r 
 
 class Youmi(models.Model):
     type = models.CharField(max_length=32, null=True)
@@ -107,4 +121,41 @@ class Youmi(models.Model):
     point = models.IntegerField(default=0)
     time = models.IntegerField(default=0)
     #time_created = models.IntegerField(default=int(time.time()))
+
+    def toJSON(self):
+        r = {}
+        r['type'] = self.type
+        r['order'] = self.order
+        r['app'] = self.app
+        r['ad'] = self.ad
+        r['adid'] = self.adid
+        r['user'] = self.user
+        r['device'] = self.device
+        r['chn'] = self.chn
+        r['price'] = str(self.price)
+        r['point'] = self.point
+        r['time'] = self.time
+        return r  
+
+class Miidi(models.Model):
+    id = models.CharField(max_length=128, null=True)
+    trand_no = models.CharField(max_length=128, null=True)
+    cash = models.IntegerField(default=0)
+    imei = models.CharField(max_length=128, null=True)
+    bundleId = models.CharField(max_length=128, null=True)
+    param0 = models.CharField(max_length=128, null=True)
+    appName = models.CharField(max_length=128, null=True)
+    time_created = models.IntegerField(default=int(time.time()))
+
+    def toJSON(self):
+        r = {}
+        r['id'] = self.id
+        r['trand_no'] = self.trand_no
+        r['cash'] = self.cash
+        r['imei'] = self.imei
+        r['bundleId'] = self.bundleId
+        r['param0'] = self.param0
+        r['appName'] = self.appName
+        r['time_created'] = self.time_created
+        return r 
 
