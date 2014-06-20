@@ -15,7 +15,7 @@ def cb_adwo_ios(request):
     logger.info('cb_adwo_ios request params: ' + ' '.join(request.GET.keys()))    
     try:    
         appid = request.GET.get('appid')
-        adname = request.GET.get('adname')
+        adname = unquote( request.GET.get('adname') )
         adid = request.GET.get('adid')
         device = request.GET.get('device')
         idfa = request.GET.get('idfa')
@@ -30,7 +30,7 @@ def cb_adwo_ios(request):
             
             #update user point record
             user = User.objects.get(mac=device)
-            PointRecord.objects.create(user=user, channel='adwo', task=adname, point=point, status='ok')
+            PointRecord.objects.create(user=user, channel=u'安沃', task=adname, point=point, status='ok')
             user.total_points += point
             user.save()
             return HttpResponse('success')
@@ -44,11 +44,11 @@ def cb_adwo_ios(request):
 def cb_adwo_android(request):
     ret = {}
 
-    logger.info('cb_adwo_android request params: ' + ' '.join(request.GET.keys()))
+    #logger.info('cb_adwo_android request params: ' + ' '.join(request.GET.keys()))
     try:
         appid = request.GET.get('appid')
-        adname = request.GET.get('adname')
-        adid = requaest.GET.get('adid')
+        adname = unquote( request.GET.get('adname') )
+        adid = request.GET.get('adid')
         androidid = request.GET.get('androidid')
         device = request.GET.get('device')
         imei = request.GET.get('imei')
@@ -62,14 +62,14 @@ def cb_adwo_android(request):
             Adwo.objects.create(appid=appid, adname=adname, adid=adid, androidid=androidid, device=device, imei=imei, point=point, ts=ts)
 
             #update user point record
-            user = User.objects.get(mac=device)
-            PointRecord.objects.create(user=user, channel='adwo', task=adname, point=point, status='ok')
+            user = User.objects.get(dev_id=imei)
+            PointRecord.objects.create(user=user, channel=u'安沃', task=adname, point=point, status='ok')
             user.total_points += point
             user.save()
             return HttpResponse('success')
         else:
             return HttpResponse('duplicate')
-    except:
+    except: 
         return HttpResponse('error')
 
 def show_adwo(request):

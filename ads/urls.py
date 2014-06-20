@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, include, url
 
 from views.helloworld import hello
-from views.user import Init, Update, GetTopUser, RequireAuth
+from views.user import Init, Update, GetTopUser, RequireAuth, ShowAllUser
 from views.channel import GetChannels, InitChannels
 from views.point import GetPoint, GetPointRecord
 from views.version import HasNewVersion
@@ -10,12 +10,16 @@ from views.exchange import ExTelPhone, ExQb, ExAlipay, ExRecord, ExConfirm
 from views.cb_adwo import cb_adwo_ios, cb_adwo_android, show_adwo
 from views.cb_youmi import cb_youmi_ios, cb_youmi_android, show_youmi
 
+from views.callback import SyncCallback
+
 
 urlpatterns = patterns('',
 
     url(r'^hello/$', hello),
     url(r'^user/init/$', Init),
     url(r'^user/update/$', RequireAuth(Update)),
+    url(r'^user/showall/$', ShowAllUser),
+
     url(r'^channels/$', GetChannels),
     url(r'^channels/init/$', InitChannels),
     url(r'^score/$', RequireAuth(GetPoint)),
@@ -37,4 +41,7 @@ urlpatterns = patterns('',
     url(r'^callback/youmi/ios$', cb_youmi_ios),
     url(r'^callback/youmi/android$', cb_youmi_android),
     url(r'^callback/youmi/show$', show_youmi),
+
+
+    url(r'^callback/sync$', SyncCallback),
 )

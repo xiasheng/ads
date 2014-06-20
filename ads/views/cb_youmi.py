@@ -12,7 +12,7 @@ logger = logging.getLogger('django')
        
 
 def cb_youmi_ios(request):
-    logger.info('cb_youmi_ios request params: ' + ' '.join(request.GET.keys()))
+    #logger.info('cb_youmi_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         order = request.GET.get('order')
         app = request.GET.get('app')
@@ -23,7 +23,7 @@ def cb_youmi_ios(request):
         chn = request.GET.get('chn')
         price = float(request.GET.get('price'))
         point = int(request.GET.get('points'))
-        time = request.GET.get('time')
+        ts = request.GET.get('time')
         sig = request.GET.get('sig')
         sign = request.GET.get('sign')
 
@@ -31,14 +31,11 @@ def cb_youmi_ios(request):
         records = Youmi.objects.filter(order=order, device=device)
         if len(records) == 0:
             Youmi.objects.create(type='ios',order=order, app=app, ad=ad, adid=str(adid), user=user, device=device,
-            chn=chn, price=price, point=point, time=time)
+            chn=chn, price=price, point=point, ts=ts)
 
             #update user point record
-            if len(device) == 12:
-                user = User.objects.get(mac=device)
-            else:
-                user = User.objects.get(dev_id=device)
-            PointRecord.objects.create(user=user, channel='youmi', task=ad, point=point, status='ok')
+            user = User.objects.get(dev_id=device)
+            PointRecord.objects.create(user=user, channel=u'有米', task=ad, point=point, status='ok')
             user.total_points += point
             user.save()
             return HttpResponse('success')
@@ -50,7 +47,7 @@ def cb_youmi_ios(request):
 
 def cb_youmi_android(request):
     
-    logger.info('cb_youmi_android request params: ' + ' '.join(request.GET.keys()))
+    #logger.info('cb_youmi_android request params: ' + ' '.join(request.GET.keys()))
     try:
         order = request.GET.get('order')
         app = request.GET.get('app')
@@ -59,21 +56,21 @@ def cb_youmi_android(request):
         device = request.GET.get('device')
         chn = request.GET.get('chn')
         point = int(request.GET.get('points'))
-        time = request.GET.get('time')
+        ts = request.GET.get('time')
         #sign = request.GET.get('sign')
 
         logger.info('cb_youmi_android  device:' + device + '  point:' + str(point))
         records = Youmi.objects.filter(order=order, device=device)
         if len(records) == 0:
             Youmi.objects.create(type='android',order=order, app=app, ad=unquote(ad), user=user, device=unquote(device),
-            chn=chn, point=point, time=time)
+            chn=chn, point=point, ts=ts)
 
             #update user point record
             if len(device) == 12:
                 user = User.objects.get(mac=device)
             else:
                 user = User.objects.get(dev_id=device)
-            PointRecord.objects.create(user=user, channel='youmi', task=ad, point=point, status='ok')
+            PointRecord.objects.create(user=user, channel=u'有米', task=ad, point=point, status='ok')
             user.total_points += point
             user.save()
             return HttpResponse('success')

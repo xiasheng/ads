@@ -21,12 +21,12 @@ def InitChannels(request):
         AddChannel('dianru', '点入', '专注于移动互联网平台开发及网络技术服务,精准化、智能化的综合广告管理平台', prefix+'logo_dianru.png', 3)
         AddChannel('miidi', '米迪', '国内领先的移动广告平台,致力于打造一个多方共赢的手机移动广告平台', prefix+'logo_miidi.jpg', 4)
         AddChannel('domob', '多盟', '中国第一智能手机广告平台', prefix+'logo_domob.jpg', 5)
-        AddChannel('yijifen', '易积分', '多快好省', prefix+'logo_yijifen.jpg', 6)
-        AddChannel('adview', 'AdView', '中国最大的移动广告交易平台', prefix+'logo_adview.png', 7)
-        AddChannel('cocounion', '触控', '开启新纪元,流量更优质,投放更精准', prefix+'logo_cocounion.png', 8)
+        AddChannel('mobsmar', '指盟', '灵活定制的移动广告解决方案无论提升品牌还是绩效都能轻松应对', prefix+'logo_mobsmar.jpg', 6)
+        AddChannel('guomob', '果盟', '国内最注重效果的移动广告平台', prefix+'logo_guomob.jpg', 7)
+        AddChannel('waps', '万普', '中国领先的移动营销服务提供商,致力于为全球广告客户提供基于移动互联网的效果广告及整合营销服务', prefix+'logo_waps.jpg', 8)
 
         return SuccessResponse(ret)
-    except :
+    except IOError:
         return ErrorResponse(E_SYSTEM)
 
 def GetChannels(request):

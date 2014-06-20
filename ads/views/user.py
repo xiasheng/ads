@@ -2,6 +2,7 @@
 
 from ads.views.common import *
 from ads.models.models import User
+from django.conf import settings
 import random
 
 def generateUserId():
@@ -18,23 +19,41 @@ def generateUserId():
 def checkParam(mac, dev_id, token):
     return True
 
+def checkSign(type, dev_id, nonce, sign):
+    if type == 'ios':
+        appkey = settings.APPKEY_IOS
+    elif type == 'android':    
+        appkey = settings.APPKEY_ANDROID
+    else:
+        raise MyException(info='sign error')
+        
+    if sign == hashlib.md5(appkey + dev_id + nonce).digest():
+        return True
+    raise MyException(info='sign error')
+
+
 def Init(request):
     ret = {}
 
     try:
-        mac = request.POST.get('mac')
-        dev_id = request.POST.get('openUdid')
-        token = request.POST.get('token')
-        
+        mac = request.POST.get('mac', '112233445566')
+        dev_id = request.POST.get('dev_id')
+        token = request.POST.get('token', '88888888')
+        nonce = request.POST.get('nonce', '123456')
+        type = request.POST.get('type', 'ios')
+        sign = request.POST.get('sign', '123456')
+
         checkParam(mac, dev_id, token)
         
-        users =  User.objects.filter(mac=mac, dev_id=dev_id)
+        #checkSign(type, dev_id, nonce, sign)
+        
+        users =  User.objects.filter(dev_id=dev_id)
         if len(users) > 0:
             user = users[0]
         else:
             user_id = generateUserId()
-            user = User.objects.create(user_id=user_id, mac=mac, dev_id=dev_id, token=token)
-        
+            user = User.objects.create(user_id=user_id, mac=mac, dev_id=dev_id, token=token, type=type)
+
         ret['user'] = user.toJSON()
         return SuccessResponse(ret)
     except:
@@ -61,23 +80,30 @@ def GetTopUser(request):
     except:
         return ErrorResponse(E_SYSTEM)
 
+
 def RequireAuth(view):
     def new_view(request, *args, **kwargs):
 
         try:
-            user_id = request.REQUEST.get('userId')
-            mac = request.REQUEST.get('mac')
-            dev_id = request.REQUEST.get('openUdid')
-            token = request.REQUEST.get('token')
+            user_id = int(request.REQUEST.get('user_id'))
+            #mac = request.REQUEST.get('mac')
+            dev_id = request.REQUEST.get('dev_id')
+            #token = request.REQUEST.get('token')
+            nonce = request.POST.get('nonce', '123456')
+            sign = request.POST.get('sign', '123456')
 
-            user = User.objects.get(user_id=user_id, mac=mac, dev_id=dev_id, token=token)
+            user = User.objects.get(user_id=user_id, dev_id=dev_id)
+
+            #checkSign(user.type, dev_id, nonce, sign)
+            
             request.META['USER'] = user
             return view(request, *args, **kwargs)
-           
-        except IOError:
+
+        except:
             return ErrorResponse(E_AUTH)
 
     return new_view   
+
 
 def CreateTestUsers(request):
     ret = {}
@@ -113,22 +139,22 @@ def DeleteTestUsers(request):
     return SuccessResponse(ret)
 
 
-def ShowAllAccounts(request):
+def ShowAllUser(request):
     ret = {}
     try:
         count = User.objects.all().count()
         users = User.objects.all()
         ret['count'] = count
-        ret['ids'] = []
+        ret['users'] = []
         for u in users:
-            ret['users'].append(u.user_id)
+            ret['users'].append(u.toJSON())
     except:
         pass
 
     return SuccessResponse(ret)
 
 
-def EnableAccount(request):
+def EnableUser(request):
     ret = {}
 
     try:
