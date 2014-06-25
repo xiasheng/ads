@@ -77,7 +77,7 @@ def ExTelPhone(request):
         return SuccessResponse(ret)
     except MyException, e:
         return ErrorResponse(E_SYSTEM, e.info)
-    except IOError:
+    except:
         return ErrorResponse(E_SYSTEM)
 
 def ExQb(request):

@@ -29,7 +29,7 @@ def cb_adwo_ios(request):
             Adwo.objects.create(appid=appid, adname=adname, adid=adid, device=device, idfa=idfa, point=point, ts=ts)
             
             #update user point record
-            user = User.objects.get(mac=device)
+            user = User.objects.get(dev_id=idfa)
             PointRecord.objects.create(user=user, channel=u'安沃', task=adname, point=point, status='ok')
             user.total_points += point
             user.save()

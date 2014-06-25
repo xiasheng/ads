@@ -99,7 +99,7 @@ def RequireAuth(view):
             request.META['USER'] = user
             return view(request, *args, **kwargs)
 
-        except:
+        except :
             return ErrorResponse(E_AUTH)
 
     return new_view   

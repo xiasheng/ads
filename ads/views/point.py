@@ -20,7 +20,7 @@ def GetPointRecord(request):
     ret['records'] = []
 
     try:    
-        records = PointRecord.objects.filter(user=request.META['USER'])
+        records = PointRecord.objects.filter(user=request.META['USER']).order_by('-id')
         
         for r in records:
             ret['records'].append(r.toJSON())

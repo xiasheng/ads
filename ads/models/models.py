@@ -154,7 +154,7 @@ class Miidi(models.Model):
 
     def toJSON(self):
         r = {}
-        r['id'] = self.id
+        r['id'] = self.adid
         r['trand_no'] = self.trand_no
         r['cash'] = self.cash
         r['imei'] = self.imei
@@ -312,3 +312,52 @@ class Dianru(models.Model):
         r['ts'] = self.ts
         return r
 
+class Yijifen(models.Model):
+    type = models.CharField(max_length=32, null=True)
+    uuid  = models.CharField(max_length=128, null=True)
+    userId = models.CharField(max_length=128, null=True)
+    score = models.IntegerField(default=0)
+    exchangetime = models.CharField(max_length=128, null=True)
+    plat = models.CharField(max_length=128, null=True)
+    idfa = models.CharField(max_length=128, null=True)
+    appName = models.CharField(max_length=128, null=True)
+    adId = models.CharField(max_length=128, null=True)
+    adName = models.CharField(max_length=256, null=True)
+    time_created = models.IntegerField(default=int(time.time()))
+
+    def toJSON(self):
+        r = {}
+        r['uuid'] = self.uuid
+        r['userId'] = self.userId
+        r['score'] = self.score
+        r['exchangetime'] = self.exchangetime
+        r['plat'] = self.plat
+        r['idfa'] = self.idfa
+        r['appName'] = self.appName
+        r['adId'] = self.adId
+        r['adName'] = self.adName
+        return r
+
+class Dianjoy(models.Model):
+    type = models.CharField(max_length=32, null=True)
+    snuid  = models.CharField(max_length=128, null=True)
+    device_id = models.CharField(max_length=128, null=True)
+    app_id = models.CharField(max_length=128, null=True)
+    currency = models.IntegerField(default=0)
+    app_ratio = models.IntegerField(default=0)
+    time_stamp = models.CharField(max_length=128, null=True)
+    ad_name = models.CharField(max_length=256, null=True)
+    pack_name = models.CharField(max_length=128, null=True)
+    time_created = models.IntegerField(default=int(time.time()))
+
+    def toJSON(self):
+        r = {}
+        r['snuid'] = self.snuid
+        r['device_id'] = self.device_id
+        r['app_id'] = self.app_id
+        r['currency'] = self.currency
+        r['app_ratio'] = self.app_ratio
+        r['time_stamp'] = self.time_stamp
+        r['ad_name'] = self.ad_name
+        r['pack_name'] = self.pack_name
+        return r
