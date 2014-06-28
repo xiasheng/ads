@@ -14,7 +14,7 @@ def cb_dianru_ios(request):
     ret = {}
     ret['message'] = 'ok'
 
-    logger.info('cb_dianru_ios request params: ' + ' '.join(request.GET.keys()))
+    #logger.info('cb_dianru_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         hashid = request.GET.get('hashid')
         appid = request.GET.get('appid')

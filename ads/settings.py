@@ -24,7 +24,7 @@ DEBUG = False
 
 TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -61,7 +61,7 @@ DATABASES = {
         'ENGINE':  'django.db.backends.mysql',
         'NAME': 'ads',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'd_connected',
         'HOST': '',
         'PORT': '',
     }
@@ -140,7 +140,8 @@ LOGGING = {
 EMAIL_HOST='smtp.exmail.qq.com'
 EMAIL_HOST_USER='service@d-connected.com'
 EMAIL_HOST_PASSWORD='sv_456123'
-EMAIL_RECIPIENTS=['xia.sheng@d-connected.com', 'zhang.shengrong@d-connected.com']
+#EMAIL_RECIPIENTS=['xia.sheng@d-connected.com', 'zhang.shengrong@d-connected.com']
+EMAIL_RECIPIENTS=['xia.sheng@d-connected.com']
 
 #app key
 APPKEY_ANDROID = 'BOglTuO6OppR5Q5B7yQDbrF6GrO9ZECM'

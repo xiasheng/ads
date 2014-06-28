@@ -14,7 +14,7 @@ def cb_waps_ios(request):
     ret = {}
     ret['message'] = u'成功接收'
 
-    logger.info('cb_waps_ios request params: ' + ' '.join(request.GET.keys()))
+    #logger.info('cb_waps_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         adv_id = request.GET.get('adv_id')
         app_id = request.GET.get('app_id')

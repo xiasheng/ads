@@ -14,7 +14,7 @@ def cb_miidi_ios(request):
     ret = {}
     ret['message'] = u'ok'
 
-    logger.info('cb_miidi_ios request params: ' + ' '.join(request.GET.keys()))
+    #logger.info('cb_miidi_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         adid = request.GET.get('id')
         trand_no = request.GET.get('trand_no')

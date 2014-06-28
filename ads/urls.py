@@ -14,8 +14,12 @@ from views.cb_dianru import cb_dianru_ios, cb_dianru_android, show_dianru
 from views.cb_domob import cb_domob_ios, cb_domob_android, show_domob
 from views.cb_waps import cb_waps_ios, cb_waps_android, show_waps
 from views.cb_miidi import cb_miidi_ios, cb_miidi_android, show_miidi
+from views.cb_dianjoy import cb_dianjoy_ios, cb_dianjoy_android, show_dianjoy
+from views.cb_chukong import cb_chukong_ios, cb_chukong_android, show_chukong
+from views.cb_mopan import cb_mopan_ios, cb_mopan_android, show_mopan
 from views.callback import SyncCallback
 
+from views.statistics import Stat
 
 urlpatterns = patterns('',
 
@@ -50,7 +54,7 @@ urlpatterns = patterns('',
     url(r'^callback/yjf/android$', cb_yjf_android),
     url(r'^callback/yjf/show$', show_yjf),
 
-    url(r'^callback/dainru/ios$', cb_dianru_ios),
+    url(r'^callback/dianru/ios$', cb_dianru_ios),
     url(r'^callback/dianru/android$', cb_dianru_android),
     url(r'^callback/dianru/show$', show_dianru),
 
@@ -66,5 +70,19 @@ urlpatterns = patterns('',
     url(r'^callback/miidi/android$', cb_miidi_android),
     url(r'^callback/miidi/show$', show_miidi),
 
+    url(r'^callback/dianjoy/ios$', cb_dianjoy_ios),
+    url(r'^callback/dianjoy/android$', cb_dianjoy_android),
+    url(r'^callback/dianjoy/show$', show_dianjoy),
+
+    url(r'^callback/chukong/ios$', cb_chukong_ios),
+    url(r'^callback/chukong/android$', cb_chukong_android),
+    url(r'^callback/chukong/show$', show_chukong),
+
+    url(r'^callback/mopan/ios$', cb_mopan_ios),
+    url(r'^callback/mopan/android$', cb_mopan_android),
+    url(r'^callback/mopan/show$', show_mopan), 
+
     url(r'^callback/sync$', SyncCallback),
+
+    url(r'^admin/stat/', Stat)
 )

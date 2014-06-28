@@ -12,7 +12,7 @@ logger = logging.getLogger('django')
        
 def cb_adwo_ios(request):
     ret = {}
-    logger.info('cb_adwo_ios request params: ' + ' '.join(request.GET.keys()))    
+    #logger.info('cb_adwo_ios request params: ' + ' '.join(request.GET.keys()))    
     try:    
         appid = request.GET.get('appid')
         adname = unquote( request.GET.get('adname') )

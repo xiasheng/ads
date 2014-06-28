@@ -14,7 +14,7 @@ def cb_domob_ios(request):
     ret = {}
     ret['message'] = 'ok'
 
-    logger.info('cb_domob_ios request params: ' + ' '.join(request.GET.keys()))
+    #logger.info('cb_domob_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         orderid = request.GET.get('orderid')
         pubid = request.GET.get('pubid')

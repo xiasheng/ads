@@ -14,7 +14,7 @@ def cb_yjf_ios(request):
     ret = {}
     ret['message'] = 'ok'
     
-    logger.info('cb_yjf_ios request params: ' + ' '.join(request.GET.keys()))
+    #logger.info('cb_yjf_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         uuid = request.GET.get('uuid')
         userId = request.GET.get('userId')

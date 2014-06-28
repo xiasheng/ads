@@ -74,16 +74,18 @@ class Channel(models.Model):
     description = models.CharField(max_length=1024, null=True)
     name = models.CharField(max_length=64, null=True)
     image = models.CharField(max_length=128, null=True)
-    order = models.IntegerField(default=0)    
+    order = models.IntegerField(default=0)
     tasknum = models.IntegerField(default=10)
-        
+    is_enable = models.BooleanField(default=True)
+
     def toJSON(self):
         r = {}
+        r['id'] = self.id
+        r['order'] = self.order
         r['code'] = str(self.code)
         r['description'] = self.description
         r['name'] = self.name
-        r['image'] = self.image
-        r['order'] = self.order
+        r['image'] = self.image 
         return r
 
 class Adwo(models.Model):
@@ -344,7 +346,7 @@ class Dianjoy(models.Model):
     device_id = models.CharField(max_length=128, null=True)
     app_id = models.CharField(max_length=128, null=True)
     currency = models.IntegerField(default=0)
-    app_ratio = models.IntegerField(default=0)
+    app_ratio = models.DecimalField(max_digits=10, decimal_places=4, default=0)
     time_stamp = models.CharField(max_length=128, null=True)
     ad_name = models.CharField(max_length=256, null=True)
     pack_name = models.CharField(max_length=128, null=True)
@@ -356,8 +358,63 @@ class Dianjoy(models.Model):
         r['device_id'] = self.device_id
         r['app_id'] = self.app_id
         r['currency'] = self.currency
-        r['app_ratio'] = self.app_ratio
+        r['app_ratio'] = str( self.app_ratio )
         r['time_stamp'] = self.time_stamp
         r['ad_name'] = self.ad_name
         r['pack_name'] = self.pack_name
         return r
+
+class Chukong(models.Model):
+    type = models.CharField(max_length=32, null=True)
+    os  = models.CharField(max_length=32, null=True)
+    os_version = models.CharField(max_length=32, null=True)
+    idfa = models.CharField(max_length=128, null=True)
+    mac = models.CharField(max_length=32, null=True)
+    imei = models.CharField(max_length=128, null=True)
+    ip = models.CharField(max_length=32, null=True)
+    transactionid = models.CharField(max_length=128, null=True)
+    coins = models.IntegerField(default=0)
+    adid = models.CharField(max_length=128, null=True)
+    adtitle = models.CharField(max_length=256, null=True)
+    taskname = models.CharField(max_length=256, null=True)
+    taskcontent = models.CharField(max_length=256, null=True)
+    token = models.CharField(max_length=128, null=True)
+    time_created = models.IntegerField(default=int(time.time()))
+
+    def toJSON(self):
+        r = {}
+        r['os'] = self.os
+        r['os_version'] = self.os_version
+        r['idfa'] = self.idfa
+        r['mac'] = self.mac
+        r['imei'] = str( self.imei )
+        r['ip'] = self.ip
+        r['transactionid'] = self.transactionid
+        r['coins'] = self.coins
+        r['adid'] = self.adid
+        r['adtitle'] = self.adtitle
+        r['taskname'] = self.taskname
+        r['taskcontent'] = self.taskcontent
+        r['token'] = self.token
+        return r
+
+class Mopan(models.Model):
+    type = models.CharField(max_length=32, null=True)
+    imei  = models.CharField(max_length=128, null=True)
+    param0 = models.CharField(max_length=128, null=True)
+    cash = models.IntegerField(default=0)
+    trand_no = models.CharField(max_length=128, null=True)
+    adid = models.CharField(max_length=128, null=True)
+    appShowName = models.CharField(max_length=256, null=True)
+    time_created = models.IntegerField(default=int(time.time()))
+
+    def toJSON(self):
+        r = {}
+        r['imei'] = self.imei
+        r['param0'] = self.param0
+        r['cash'] = self.cash
+        r['trand_no'] = self.trand_no
+        r['adid'] = self.adid
+        r['appShowName'] = self.appShowName
+        return r
+
