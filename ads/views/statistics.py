@@ -13,8 +13,9 @@ def generateEmailContent(c):
     ret += u' 今日新增用户：' + str(c['new_user']) + '\r\n'
     ret += u' 今日新增积分：' + str(c['new_point']) + '\r\n\r\n'
     ret += u' 积分详情' + '\r\n'
-    ret += u'-------------------------------------------------------' + '\r\n'
-    ret += u'          点义米：' + str(c['platform']['youmi']) + '\r\n'
+    ret += u'--------------------------------------' + '\r\n'
+    ret += u'          点乐：' + str(c['platform']['dianjoy']) + '\r\n'
+    ret += u'          有米：' + str(c['platform']['youmi']) + '\r\n'
     ret += u'          米迪：' + str(c['platform']['miidi']) + '\r\n'
     ret += u'          安沃：' + str(c['platform']['adwo']) + '\r\n'
     ret += u'          多盟：' + str(c['platform']['domob']) + '\r\n'
@@ -48,6 +49,8 @@ def Stat(request):
 
     t_begin = int( request.GET.get('from', t_begin))
     t_end = int( request.GET.get('to', t_end))
+
+    shouldSendEmail = int( request.GET.get('sendemail', 0))
 
     try:    
         count_new_user = User.objects.filter(time_created__gt=t_begin).filter(time_created__lt=t_end).count()
@@ -85,12 +88,13 @@ def Stat(request):
         p['mopan'] = points_mopan
 
         ret['platform'] = p
-        title = 'Moremoney Report %s' %(datetime.date.fromtimestamp(time.time()))
-        content = generateEmailContent(ret)
-        notifyEmail(title, content)
+        if shouldSendEmail:
+            title = 'Moremoney Report %s' %(datetime.date.fromtimestamp(time.time()))
+            content = generateEmailContent(ret)
+            notifyEmail(title, content)
          
         return SuccessResponse(ret)
-    except IOError:
+    except:
         return ErrorResponse(E_SYSTEM)
 
 
