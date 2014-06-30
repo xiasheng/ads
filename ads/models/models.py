@@ -55,6 +55,7 @@ class ExchangeRecord(models.Model):
     cost = models.IntegerField(default=0)
     amount = models.IntegerField(default=0)
     status = models.CharField(max_length=32)
+    description = models.CharField(max_length=256, null=True)
     xid = models.CharField(max_length=64, null=True)
     time_created = models.IntegerField(default=int(time.time()))
     time_processed = models.IntegerField(default=int(time.time()))
@@ -65,6 +66,7 @@ class ExchangeRecord(models.Model):
         r['cost'] = self.cost
         r['amount'] = self.amount
         r['status'] = self.status
+        r['description'] = self.description
         r['createTime'] = self.time_created
         r['processingTime'] = self.time_processed
         return r

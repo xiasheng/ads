@@ -6,7 +6,7 @@ from views.user import Init, Update, GetTopUser, RequireAuth, ShowAllUser
 from views.channel import GetChannels, InitChannels
 from views.point import GetPoint, GetPointRecord
 from views.version import HasNewVersion
-from views.exchange import ExTelPhone, ExQb, ExAlipay, ExRecord, ExConfirm
+from views.exchange import ExTelPhone, ExQb, ExAlipay, ExRecord, ExConfirm, ExProblem
 from views.cb_adwo import cb_adwo_ios, cb_adwo_android, show_adwo
 from views.cb_youmi import cb_youmi_ios, cb_youmi_android, show_youmi
 from views.cb_yjf import cb_yjf_ios, cb_yjf_android, show_yjf
@@ -38,6 +38,7 @@ urlpatterns = patterns('',
     url(r'^exchange/alipay/$', RequireAuth(ExAlipay)),
     url(r'^exchange/records/$', RequireAuth(ExRecord)),
     url(r'^exconfirm/$', ExConfirm),
+    url(r'^exproblem/$', ExProblem),
 
     url(r'^top/score/$', GetTopUser),
     url(r'^version/hasnew/$', HasNewVersion),

@@ -6,6 +6,8 @@ from ads.models.models import ExchangeRecord, User
 from django.conf import settings
 import re, threading, hashlib, time
 from django.http import HttpResponse
+from urllib import urlencode
+
 
 def checkTelPhone(tel):
     p = re.compile(r'((^13[0-9]|15[0|3|6|7|8|9]|18[8|9])\d{8}$)')
@@ -68,11 +70,8 @@ def ExTelPhone(request):
 
         r = ExchangeRecord.objects.create(user=user, type='telphone', account=telphone,
         cost=cost, amount=amount, status='pending', xid=getXid())
-
-        title = u'【兑换话费】 用户ID:' + str(user.user_id) + u'  手机号:' + telphone + u'  使用积分:' + str(cost) + u'  兑换金额:' + str(amount)
-        url = getConfirmUrl(request.get_host(), user.user_id, r.xid, r.time_created)
-        content = u'完成支付后请点击该链接确认: ' + '<a href=' + url + '> <b>' + u'确认支付' + '</b> </a>'
-        notifythread(title, content).start()
+        
+        sendNotifyEmail('telphone', telphone, cost, amount, request.get_host(), user.user_id, r.xid, r.time_created)
 
         return SuccessResponse(ret)
     except MyException, e:
@@ -101,10 +100,7 @@ def ExQb(request):
         r = ExchangeRecord.objects.create(user=user, type='qb', account=qq,
         cost=cost, amount=amount, status='pending', xid=getXid())
 
-        title = u'【兑换Q币】 用户ID:' + str(user.user_id) + u'  QQ号:' + qq + u'  使用积分:' + str(cost) + u'  兑换金额:' + str(amount)
-        url = getConfirmUrl(request.get_host(), user.user_id, r.xid, r.time_created)
-        content = u'完成支付后请点击该链接确认: ' + '<a href=' + url + '> <b>' + u'确认支付' + '</b> </a>'
-        notifythread(title, content).start()
+        sendNotifyEmail('qb', qq, cost, amount, request.get_host(), user.user_id, r.xid, r.time_created)
 
         return SuccessResponse(ret)
     except MyException, e:
@@ -134,10 +130,7 @@ def ExAlipay(request):
         r = ExchangeRecord.objects.create(user=user, type='alipay', account=aliNo,
         cost=cost, amount=amount, status='pending', xid=getXid())
 
-        title = u'【兑换支付宝】 用户ID:' + str(user.user_id) + u'  支付宝账号:' + aliNo + u'  使用积分:' + str(cost) + u'  兑换金额:' + str(amount)
-        url = getConfirmUrl(request.get_host(), user.user_id, r.xid, r.time_created)
-        content = u'完成支付后请点击该链接确认: ' + '<a href=' + url + '> <b>' + u'确认支付' + '</b> </a>'
-        notifythread(title, content).start()
+        sendNotifyEmail('alipay', aliNo, cost, amount, request.get_host(), user.user_id, r.xid, r.time_created)
 
         return SuccessResponse(ret)
     except MyException, e:
@@ -165,14 +158,35 @@ def getConfirmUrl(host, uid, xid, t):
     uid = str(uid)
     xid = str(xid)
     t = str(t)
-    cs = hashlib.md5('exconfirm'+uid+xid+t).hexdigest()
+    cs = hashlib.md5('ex_confirm'+uid+xid+t).hexdigest()
     url = 'http://%s/exconfirm/?uid=%s&xid=%s&t=%s&cs=%s' %(host, uid, xid, t, cs)
     return url
+    
+def getProblemUrl(host, uid, xid, t):
+    uid = str(uid)
+    xid = str(xid)
+    t = str(t)
+    cs = hashlib.md5('ex_problem'+uid+xid+t).hexdigest()
+    url = 'http://%s/exproblem/?uid=%s&xid=%s&t=%s&cs=%s' %(host, uid, xid, t, cs)
+    return url    
 
-def checkCS(uid, xid, t, cs):
-    if cs == hashlib.md5('exconfirm'+uid+xid+t).hexdigest():
-        return True
-    return False
+
+def sendNotifyEmail(type, account, cost, amount, host, uid, xid, t):
+    if type == 'telphone':
+        title = u'【兑换话费】 用户ID:' + str(uid) + u'  手机号:' + account + u'  使用积分:' + str(cost) + u'  兑换金额:' + str(amount)
+    elif type == 'qb':
+        title = u'【兑换Q币】 用户ID:' + str(uid) + u'  QQ号:' + account + u'  使用积分:' + str(cost) + u'  兑换金额:' + str(amount)        
+    elif type == 'alipay':
+        title = u'【兑换支付宝】 用户ID:' + str(uid) + u'  支付宝号:' + account + u'  使用积分:' + str(cost) + u'  兑换金额:' + str(amount)        
+    else:
+        return
+                    
+    url1 = getConfirmUrl(host, uid, xid, t)
+    url2 = getProblemUrl(host, uid, xid, t)
+    content =  '<p>' +  u'成功支付请点击该链接确认: ' + '<a href=' + url1 + '> <b>' + u'成功支付' + '</b> </a>' + '</p>'
+    content += '<p>' +  u'遇到问题请点击该链接反馈: ' + '<a href=' + url2 + '> <b>' + u'遇到问题' + '</b> </a>' + '</p>'
+    notifythread(title, content).start()
+
 
 def ExConfirm(request):
     ret = {}
@@ -184,8 +198,8 @@ def ExConfirm(request):
         t = request.GET.get('t')
         cs = request.GET.get('cs')
 
-        if not checkCS(uid, xid, t, cs):
-            return HttpResponse('无效链接')
+        if cs != hashlib.md5('ex_confirm'+uid+xid+t).hexdigest():
+            return HttpResponse(u'无效链接')
 
         user = User.objects.get(user_id=uid)
         record = ExchangeRecord.objects.get(user=user, xid=xid, time_created=t)
@@ -193,12 +207,49 @@ def ExConfirm(request):
             record.status = 'closed'
             record.time_processed  = int(time.time())
             record.save()
-            return HttpResponse('确认支付成功')
+            return HttpResponse(u'确认支付成功')
         elif record.status == 'closed':
-            return HttpResponse('该交易已经结束了哦')
+            return HttpResponse(u'该交易已经结束了哦')
         else:
-            return HttpResponse('系统错误')
+            return HttpResponse(u'系统错误')
 
     except:
-        return HttpResponse('无效链接')
+        return HttpResponse(u'无效链接')
+        
+
+def ExProblem(request):
+    ret = {}
+    ret['records'] = []
+
+    try:
+        uid = request.GET.get('uid')
+        xid = request.GET.get('xid')
+        t = request.GET.get('t')
+        cs = request.GET.get('cs')
+        flag = request.GET.get('flag', '0')
+        problem = request.POST.get('problem', '')
+        
+        if cs != hashlib.md5('ex_problem'+uid+xid+t).hexdigest():
+            return HttpResponse(u'无效链接')
+            
+        if flag == '0':
+            action = '/exproblem/?flag=1&' + urlencode(request.GET)
+            html = '<form action=%s method="post">  <p>Write your problem here:</p><textarea rows="5" cols="80" name="problem"> </textarea>  <p><input type="submit" value="Submit" /></p> </form>' %(action)
+            return HttpResponse(html)    
+
+        user = User.objects.get(user_id=uid)
+        record = ExchangeRecord.objects.get(user=user, xid=xid, time_created=t)
+        if record.status == 'pending':
+            record.status = 'failed'
+            record.description = problem
+            record.time_processed  = int(time.time())
+            record.save()
+            return HttpResponse(u'提交问题反馈成功')
+        elif record.status == 'closed':
+            return HttpResponse(u'该交易已经结束了哦')
+        else:
+            return HttpResponse(u'系统错误')
+
+    except:
+        return HttpResponse(u'无效链接')    
 
