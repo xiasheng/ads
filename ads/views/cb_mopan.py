@@ -9,19 +9,33 @@ import logging, json
 from urllib import unquote
 
 logger = logging.getLogger('django')
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
 
+def check_sign(param, sign):
+    sk = 'osu1jzrefj1ppofwm3ovjoehy98pot'
+
+    import hashlib
+    if hashlib.md5(param+sk).hexdigest() == sign:
+        return True
+
+    logger.info('cb_mopan_ios: sign illegal')
+    raise MyException('sign illegal')
 
 def cb_mopan_ios(request):
 
-    logger.info('cb_mopan_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         imei = request.GET.get('imei')
-        param0 = request.GET.get('param0')
+        param0 = request.GET.get('param0', '')
         cash = int( request.GET.get('cash') )
         trand_no = request.GET.get('trand_no')
         adid = request.GET.get('id')
         appShowName = unquote( request.GET.get('appShowName') )
         sign = request.GET.get('sign')
+
+        param = adid + trand_no + str(cash) + param0
+        check_sign(param, sign) 
 
         logger.info('cb_mopan_ios  imei:' + imei + '  cash:' + str(cash))
         records = Mopan.objects.filter(trand_no=trand_no, imei=imei)
@@ -40,7 +54,6 @@ def cb_mopan_ios(request):
 
 def cb_mopan_android(request):
 
-    #logger.info('cb_mopan_android request params: ' + ' '.join(request.GET.keys()))
     return HttpResponse('error', status=403)
 
 

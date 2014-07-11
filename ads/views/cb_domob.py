@@ -7,14 +7,27 @@ from django.http import HttpResponse
 
 import logging, json
 from urllib import unquote
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
 
 logger = logging.getLogger('django')
 
+def check_sign(param, sign):
+    sk = '6243ef86'
+
+    import hashlib
+    if hashlib.md5(param+sk).hexdigest() == sign:
+        return True
+
+    logger.info('cb_domob_ios: sign illegal')
+    raise MyException('sign illegal')
+
+
 def cb_domob_ios(request):
     ret = {}
-    ret['message'] = 'ok'
+    ret['message'] = 'success'
 
-    #logger.info('cb_domob_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         orderid = request.GET.get('orderid')
         pubid = request.GET.get('pubid')
@@ -23,10 +36,15 @@ def cb_domob_ios(request):
         user = request.GET.get('user')
         device = request.GET.get('device')
         channel = request.GET.get('channel')
-        price = float( request.GET.get('price') )
+        price_raw = request.GET.get('price')
+        price = float( price_raw )
         point = int( request.GET.get('point') )
         ts = request.GET.get('ts')
         sign = request.GET.get('sign')
+
+        param = "ad=%sadid=%schannel=%sdevice=%sorderid=%spoint=%dprice=%spubid=%sts=%suser=%s" \
+                %(ad, adid, channel, device, orderid, point,price_raw, pubid, ts, user)
+        check_sign(param, sign) 
 
         logger.info('cb_domob_ios  device:' + device + '  point:' + str(point))
         records = Domob.objects.filter(orderid=orderid, device=device)
@@ -39,12 +57,7 @@ def cb_domob_ios(request):
             PointRecord.objects.create(user=user, channel=u'多盟', task=ad, point=point, status='ok')
             user.total_points += point
             user.save()
-            return SuccessResponse(ret)
-        else:
-            ret['message'] = 'duplicate'
-            return SuccessResponse(ret)
-    except:
-        ret['message'] = 'error'
+    finally:
         return SuccessResponse(ret)
 
 

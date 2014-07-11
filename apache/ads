@@ -26,4 +26,11 @@ ServerName *:80
                Allow from all
         </Directory>
 
+         Alias /static /var/www/ads/ads/static
+        <Directory "/var/www/ads/ads/static">
+               Options  FollowSymLinks
+               Order deny,allow
+               Allow from all
+        </Directory>
+
 </VirtualHost>

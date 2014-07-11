@@ -8,24 +8,42 @@ from django.http import HttpResponse
 import logging, json
 from urllib import unquote
 
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
+
 logger = logging.getLogger('django')
-       
+ 
+def check_sign(param, sign):
+    sk = '1ba4555d3feebded'
+    
+    import hashlib
+    if hashlib.md5(param+sk).hexdigest() == sign:
+        return True
+        
+    logger.info('cb_youmi_ios: sign illegal')
+    raise MyException('sign illegal')      
 
 def cb_youmi_ios(request):
-    #logger.info('cb_youmi_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         order = request.GET.get('order')
         app = request.GET.get('app')
-        ad = request.GET.get('ad')
+        ad = unquote( request.GET.get('ad') )
         adid = request.GET.get('adid')
         user = request.GET.get('user')
         device = request.GET.get('device')
         chn = request.GET.get('chn')
-        price = float(request.GET.get('price'))
+        price_raw = request.GET.get('price')
+        price = float(price_raw)
         point = int(request.GET.get('points'))
         ts = request.GET.get('time')
         sig = request.GET.get('sig')
         sign = request.GET.get('sign')
+
+        param = "ad=%sadid=%sapp=%schn=%sdevice=%sorder=%spoints=%dprice=%ssig=%stime=%suser=%s" \
+                %(ad, adid, app, chn, device, order, point, price_raw, sig, ts, user)
+        check_sign(param, sign)    
+
 
         logger.info('cb_youmi_ios  device:' + device + '  point:' + str(point))
         records = Youmi.objects.filter(order=order, device=device)
@@ -38,16 +56,12 @@ def cb_youmi_ios(request):
             PointRecord.objects.create(user=user, channel=u'有米', task=ad, point=point, status='ok')
             user.total_points += point
             user.save()
-            return HttpResponse('success')
-        else:
-            return HttpResponse('duplicate', status=403)
-    except:
-        return HttpResponse('error')
+    finally:
+        return HttpResponse('success')
 
 
 def cb_youmi_android(request):
     
-    #logger.info('cb_youmi_android request params: ' + ' '.join(request.GET.keys()))
     try:
         order = request.GET.get('order')
         app = request.GET.get('app')

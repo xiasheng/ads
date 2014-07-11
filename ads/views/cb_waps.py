@@ -14,7 +14,6 @@ def cb_waps_ios(request):
     ret = {}
     ret['message'] = u'成功接收'
 
-    #logger.info('cb_waps_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         adv_id = request.GET.get('adv_id')
         app_id = request.GET.get('app_id')
@@ -30,6 +29,7 @@ def cb_waps_ios(request):
         random_code = request.GET.get('random_code')
         wapskey = request.GET.get('wapskey')
 
+
         logger.info('cb_waps_ios  udid:' + udid + '  points:' + str(points))
         records = Waps.objects.filter(udid=udid, open_udid=open_udid, order_id=order_id)
         if len(records) == 0:
@@ -42,14 +42,8 @@ def cb_waps_ios(request):
             PointRecord.objects.create(user=user, channel=u'万普', task=ad_name, point=points, status='ok')
             user.total_points += points
             user.save()
-            return SuccessResponse(ret)
-        else:
-            ret['message'] = u'无效数据'
-            return SuccessResponse(ret)
-    except:
-        ret['message'] = u'无效数据'
+    finally:
         return SuccessResponse(ret)
-
 
 
 def cb_waps_android(request):

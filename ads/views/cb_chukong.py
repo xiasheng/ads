@@ -13,7 +13,7 @@ logger = logging.getLogger('django')
 
 def cb_chukong_ios(request):
 
-    #logger.info('cb_chukong_ios request params: ' + ' '.join(request.GET.keys()))
+    logger.info('cb_chukong_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         os = request.GET.get('os')
         os_version = request.GET.get('os_version')

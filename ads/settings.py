@@ -26,6 +26,9 @@ TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+TEMPLATE_DIRS = (
+    '/var/www/ads/ads/templates',
+)
 
 # Application definition
 
@@ -36,7 +39,7 @@ INSTALLED_APPS = (
     #'django.contrib.contenttypes',
     #'django.contrib.sessions',
     #'django.contrib.messages',
-    #'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -85,6 +88,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = "/var/www/ads/ads/staticfiles/"
+STATICFILES_DIRS = (
+    '/var/www/ads/ads/static/',
+)
 
 CACHES = {
     'default': {
@@ -140,8 +147,8 @@ LOGGING = {
 EMAIL_HOST='smtp.exmail.qq.com'
 EMAIL_HOST_USER='service@d-connected.com'
 EMAIL_HOST_PASSWORD='sv_456123'
-#EMAIL_RECIPIENTS=['xia.sheng@d-connected.com', 'zhang.shengrong@d-connected.com']
-EMAIL_RECIPIENTS=['xia.sheng@d-connected.com']
+EMAIL_RECIPIENTS=['xia.sheng@d-connected.com', 'zhang.shengrong@d-connected.com']
+#EMAIL_RECIPIENTS=['xia.sheng@d-connected.com']
 
 #app key
 APPKEY_ANDROID = 'BOglTuO6OppR5Q5B7yQDbrF6GrO9ZECM'

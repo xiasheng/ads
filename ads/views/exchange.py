@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-  
 
 from ads.views.common import *
-from ads.models.models import ExchangeRecord, User
+from ads.models.models import ExchangeRecord, ExchangeProduct, User
 from django.conf import settings
 import re, threading, hashlib, time
 from django.http import HttpResponse
@@ -50,6 +50,50 @@ def notifyEmail(title, content):
 def getXid():
   return RandomStr(rlen=32)
 
+def InitProducts(request):
+    ret = {}
+
+    try:
+        ExchangeProduct.objects.all().delete()
+
+        ExchangeProduct.objects.create(code='P11', name='MOBILE', price=10, score=1050, info=u'1050金币兑换10元话费')
+        ExchangeProduct.objects.create(code='P12', name='MOBILE', price=20, score=2050, info=u'2050金币兑换20元话费')
+        ExchangeProduct.objects.create(code='P13', name='MOBILE', price=50, score=5000, info=u'5000金币兑换50元话费')
+        ExchangeProduct.objects.create(code='P14', name='MOBILE', price=100, score=9800, info=u'9800金币兑换100元话费')
+
+        ExchangeProduct.objects.create(code='P21', name='QB', price=10, score=1050, info=u'1050金币兑换10 QB')
+        ExchangeProduct.objects.create(code='P22', name='QB', price=20, score=2050, info=u'2050金币兑换20 QB')
+        ExchangeProduct.objects.create(code='P23', name='QB', price=50, score=5000, info=u'5000金币兑换50 QB')
+        ExchangeProduct.objects.create(code='P24', name='QB', price=100, score=9800, info=u'9800金币兑换100 QB')
+
+        ExchangeProduct.objects.create(code='P31', name='ALIPAY', price=10, score=1050, info=u'1050金币兑换10元')
+        ExchangeProduct.objects.create(code='P32', name='ALIPAY', price=20, score=2050, info=u'2050金币兑换20元')
+        ExchangeProduct.objects.create(code='P33', name='ALIPAY', price=50, score=5000, info=u'5000金币兑换50元')
+        ExchangeProduct.objects.create(code='P34', name='ALIPAY', price=100, score=9800, info=u'9800金币兑换100元')
+
+        return SuccessResponse(ret)
+
+    except:
+        return ErrorResponse(E_SYSTEM)
+
+def QueryProducts(request):
+    ret = {}
+    ret['products'] = []
+
+    try:
+        type = request.GET.get('type')
+                    
+        products = ExchangeProduct.objects.filter(name=type)
+        
+        for p in products:
+            ret['products'].append(p.toJSON())         
+
+        return SuccessResponse(ret)
+    
+    except:
+        return ErrorResponse(E_SYSTEM)
+
+
 def ExTelPhone(request):
     ret = {}
 
@@ -68,7 +112,7 @@ def ExTelPhone(request):
         user.total_points -= cost
         user.save()
 
-        r = ExchangeRecord.objects.create(user=user, type='telphone', account=telphone,
+        r = ExchangeRecord.objects.create(user=user, type='MOBILE', account=telphone,
         cost=cost, amount=amount, status='pending', xid=getXid())
         
         sendNotifyEmail('telphone', telphone, cost, amount, request.get_host(), user.user_id, r.xid, r.time_created)
@@ -97,7 +141,7 @@ def ExQb(request):
         user.total_points -= cost
         user.save()
 
-        r = ExchangeRecord.objects.create(user=user, type='qb', account=qq,
+        r = ExchangeRecord.objects.create(user=user, type='QB', account=qq,
         cost=cost, amount=amount, status='pending', xid=getXid())
 
         sendNotifyEmail('qb', qq, cost, amount, request.get_host(), user.user_id, r.xid, r.time_created)
@@ -127,7 +171,7 @@ def ExAlipay(request):
         user.total_points -= cost
         user.save()
 
-        r = ExchangeRecord.objects.create(user=user, type='alipay', account=aliNo,
+        r = ExchangeRecord.objects.create(user=user, type='ALIPAY', account=aliNo,
         cost=cost, amount=amount, status='pending', xid=getXid())
 
         sendNotifyEmail('alipay', aliNo, cost, amount, request.get_host(), user.user_id, r.xid, r.time_created)

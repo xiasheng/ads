@@ -105,6 +105,20 @@ def RequireAuth(view):
     return new_view   
 
 
+def SetScore(request):
+    ret = {}
+
+    try:
+        user = request.META['USER']
+        score = int(request.POST.get('score'))
+        user.total_points = score
+        user.save()
+        return SuccessResponse(ret)
+    except:
+        return ErrorResponse(E_SYSTEM)
+
+
+
 def CreateTestUsers(request):
     ret = {}
     ret['users'] = []

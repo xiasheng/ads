@@ -8,11 +8,24 @@ from django.http import HttpResponse
 import logging, json
 from urllib import unquote
 
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
+
 logger = logging.getLogger('django')
-       
+ 
+def check_sign(param, sign):
+    sk = '8s6fqece'
+
+    import hashlib
+    if hashlib.md5(param+sk).hexdigest() == sign:
+        return True
+
+    logger.info('cb_adwo_ios: sign illegal')
+    raise MyException('sign illegal')
+      
 def cb_adwo_ios(request):
     ret = {}
-    #logger.info('cb_adwo_ios request params: ' + ' '.join(request.GET.keys()))    
     try:    
         appid = request.GET.get('appid')
         adname = unquote( request.GET.get('adname') )
@@ -23,6 +36,10 @@ def cb_adwo_ios(request):
         ts = int(request.GET.get('ts'))
         sign = request.GET.get('sign')
         
+        param = "adid=%sadname=%sappid=%sdevice=%sidfa=%spoint=%dts=%skey=" \
+                %(adid, adname, appid, device, idfa, point,ts)
+        check_sign(param, sign)   
+
         logger.info('cb_adwo_ios  device:' + device + '  point:' + str(point))
         records = Adwo.objects.filter(device=device, idfa=idfa, ts=ts)
         if len(records) == 0:
@@ -33,18 +50,14 @@ def cb_adwo_ios(request):
             PointRecord.objects.create(user=user, channel=u'安沃', task=adname, point=point, status='ok')
             user.total_points += point
             user.save()
-            return HttpResponse('success')
-        else:
-            return HttpResponse('duplicate')
-    except:
-        return HttpResponse('error')
+    finally:
+        return HttpResponse('success')
 
 
 
 def cb_adwo_android(request):
     ret = {}
 
-    #logger.info('cb_adwo_android request params: ' + ' '.join(request.GET.keys()))
     try:
         appid = request.GET.get('appid')
         adname = unquote( request.GET.get('adname') )

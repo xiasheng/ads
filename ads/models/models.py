@@ -3,6 +3,9 @@
 from django.db import models
 import time
 
+def Now():
+    return int(time.time())
+
 class User(models.Model):
     user_id = models.IntegerField(primary_key=True)
     dev_id = models.CharField(max_length=128)
@@ -14,7 +17,7 @@ class User(models.Model):
     type = models.CharField(max_length=32, null=True)
     is_test = models.BooleanField(default=False)
     is_enable = models.BooleanField(default=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
     
     def toJSON(self):
         r = {}
@@ -35,7 +38,7 @@ class PointRecord(models.Model):
     task = models.CharField(max_length=256, default='')
     point = models.IntegerField(default=0)
     status = models.CharField(max_length=32, default='')
-    time_created = models.IntegerField(default=int(time.time()))    
+    time_created = models.IntegerField(default=Now)    
     
     def toJSON(self):
         r = {}
@@ -57,8 +60,8 @@ class ExchangeRecord(models.Model):
     status = models.CharField(max_length=32)
     description = models.CharField(max_length=256, null=True)
     xid = models.CharField(max_length=64, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
-    time_processed = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
+    time_processed = models.IntegerField(default=Now)
     
     def toJSON(self):
         r = {}
@@ -69,6 +72,28 @@ class ExchangeRecord(models.Model):
         r['description'] = self.description
         r['createTime'] = self.time_created
         r['processingTime'] = self.time_processed
+        return r
+
+class ExchangeProduct(models.Model):
+    code = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, null=True)
+    price = models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
+    info = models.CharField(max_length=64)
+    typeName = models.CharField(max_length=64, null=True)
+    typeCode = models.CharField(max_length=64, null=True)
+    typeLabel = models.CharField(max_length=64, null=True)
+
+    def toJSON(self):
+        r = {}
+        r['code'] = str(self.code)
+        r['name'] = self.name
+        r['price'] = self.price
+        r['score'] = self.score
+        r['info'] = self.info
+        r['typeName'] = self.typeName
+        r['typeCode'] = self.typeCode
+        r['typeLabel'] = self.typeLabel
         return r
             
 class Channel(models.Model):
@@ -101,7 +126,7 @@ class Adwo(models.Model):
     imei = models.CharField(max_length=128, null=True)
     point = models.IntegerField(default=0)
     ts = models.CharField(max_length=128, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
     
     def toJSON(self):
         r = {}
@@ -128,7 +153,7 @@ class Youmi(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=4, default=0)
     point = models.IntegerField(default=0)
     ts = models.CharField(max_length=128, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
 
     def toJSON(self):
         r = {}
@@ -154,7 +179,7 @@ class Miidi(models.Model):
     bundleId = models.CharField(max_length=128, null=True)
     param0 = models.CharField(max_length=128, null=True)
     appName = models.CharField(max_length=256, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
 
     def toJSON(self):
         r = {}
@@ -180,7 +205,7 @@ class Domob(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=4, default=0)
     point = models.IntegerField(default=0)
     ts = models.CharField(max_length=128, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
 
     def toJSON(self):
         r = {}
@@ -210,7 +235,7 @@ class Guomob(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=4, default=0)
     points = models.IntegerField(default=0)
     ts = models.CharField(max_length=128, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
 
     def toJSON(self):
         r = {}
@@ -240,7 +265,7 @@ class Mobsmar(models.Model):
     openudid = models.CharField(max_length=128, null=True)
     points = models.IntegerField(default=0)
     appname = models.CharField(max_length=256, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
 
     def toJSON(self):
         r = {}
@@ -271,7 +296,7 @@ class Waps(models.Model):
     status = models.CharField(max_length=128, null=True)
     activate_time = models.CharField(max_length=128, null=True)
     order_id = models.CharField(max_length=128, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
 
     def toJSON(self):
         r = {}
@@ -300,7 +325,7 @@ class Dianru(models.Model):
     source = models.CharField(max_length=128, null=True)
     point = models.IntegerField(default=0)
     ts = models.CharField(max_length=128, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
 
     def toJSON(self):
         r = {}
@@ -327,7 +352,7 @@ class Yijifen(models.Model):
     appName = models.CharField(max_length=128, null=True)
     adId = models.CharField(max_length=128, null=True)
     adName = models.CharField(max_length=256, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
 
     def toJSON(self):
         r = {}
@@ -352,7 +377,7 @@ class Dianjoy(models.Model):
     time_stamp = models.CharField(max_length=128, null=True)
     ad_name = models.CharField(max_length=256, null=True)
     pack_name = models.CharField(max_length=128, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
 
     def toJSON(self):
         r = {}
@@ -381,7 +406,7 @@ class Chukong(models.Model):
     taskname = models.CharField(max_length=256, null=True)
     taskcontent = models.CharField(max_length=256, null=True)
     token = models.CharField(max_length=128, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
 
     def toJSON(self):
         r = {}
@@ -408,7 +433,7 @@ class Mopan(models.Model):
     trand_no = models.CharField(max_length=128, null=True)
     adid = models.CharField(max_length=128, null=True)
     appShowName = models.CharField(max_length=256, null=True)
-    time_created = models.IntegerField(default=int(time.time()))
+    time_created = models.IntegerField(default=Now)
 
     def toJSON(self):
         r = {}

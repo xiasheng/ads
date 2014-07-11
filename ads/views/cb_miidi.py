@@ -7,14 +7,27 @@ from django.http import HttpResponse
 
 import logging, json
 from urllib import unquote
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
+
 
 logger = logging.getLogger('django')
 
+def check_sign(param, sign):
+    sk = 'z50b95b12zb3rc87uiaaz2rvpm8zw1'
+
+    import hashlib
+    if hashlib.md5(param+sk).hexdigest() == sign:
+        return True
+
+    logger.info('cb_miidi_ios: sign illegal')
+    raise MyException('sign illegal')
+
 def cb_miidi_ios(request):
     ret = {}
-    ret['message'] = u'ok'
+    ret['message'] = 'success'
 
-    #logger.info('cb_miidi_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         adid = request.GET.get('id')
         trand_no = request.GET.get('trand_no')
@@ -25,6 +38,9 @@ def cb_miidi_ios(request):
         appName = unquote( request.GET.get('appName') )
         sign = request.GET.get('sign')
         
+        param = adid + trand_no + str(cash) + param0
+        check_sign(param, sign)  
+
         logger.info('cb_miidi_ios  imei:' + imei + '  cash:' + str(cash))
         records = Miidi.objects.filter(imei=imei, trand_no=trand_no)
         if len(records) == 0:
@@ -36,12 +52,7 @@ def cb_miidi_ios(request):
             PointRecord.objects.create(user=user, channel=u'米迪', task=appName, point=cash, status='ok')
             user.total_points += cash
             user.save()
-            return SuccessResponse(ret)
-        else:
-            ret['message'] = u'duplicate'
-            return SuccessResponse(ret)
-    except:
-        ret['message'] = u'error'
+    finally:
         return SuccessResponse(ret)
 
 

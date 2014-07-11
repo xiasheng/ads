@@ -71,25 +71,25 @@ def Stat(request):
         points_mopan = Mopan.objects.filter(time_created__gt=t_begin).filter(time_created__lt=t_end).aggregate(Sum('cash'))['cash__sum']
 
         ret['new_user']  = count_new_user
-        ret['new_point'] = new_point
+        ret['new_point'] = new_point if new_point else 0
         p = {}
-        p['dianjoy'] = points_dianjoy
-        p['youmi'] = points_youmi
-        p['miidi'] = points_miidi
-        p['adwo'] = points_adwo
-        p['domob'] = points_domob
-        p['waps'] = points_waps
-        p['yjf'] = points_yjf
-        p['guomob'] = points_guomob
-        p['dianru'] = points_dianru
-        p['mobsmar'] = points_mobsmar
-        #p['limei'] = 0
-        p['chukong'] = points_chukong
-        p['mopan'] = points_mopan
+        p['dianjoy'] = points_dianjoy if points_dianjoy else 0
+        p['youmi'] = points_youmi if points_youmi else 0
+        p['miidi'] = points_miidi if points_miidi else 0
+        p['adwo'] = points_adwo if points_adwo else 0
+        p['domob'] = points_domob if points_domob else 0
+        p['waps'] = points_waps if points_waps else 0
+        p['yjf'] = points_yjf if points_yjf else 0
+        p['guomob'] = points_guomob if points_guomob else 0
+        p['dianru'] = points_dianru if points_dianru else 0
+        p['mobsmar'] = points_mobsmar if points_mobsmar else 0
+        #p['limei'] = points_limei  if points_limei else 0
+        p['chukong'] = points_chukong if points_chukong else 0
+        p['mopan'] = points_mopan if points_mopan else 0
 
         ret['platform'] = p
         if shouldSendEmail:
-            title = 'Moremoney Report %s' %(datetime.date.fromtimestamp(time.time()))
+            title = 'MoreMoney Daily Report %s' %(datetime.date.fromtimestamp(time.time()-60))
             content = generateEmailContent(ret)
             notifyEmail(title, content)
          

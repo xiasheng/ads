@@ -10,10 +10,20 @@ from urllib import unquote
 
 logger = logging.getLogger('django')
 
+def check_token(time_stamp, token, type='ios'):
+    if type == 'ios':
+        sk = 'B3rwUJwyuIFFGrYz'
+    else:
+        sk = 'Go6MaX27ZS8RHfJV'
+
+    import hashlib
+    if hashlib.md5(time_stamp+sk).hexdigest() == token:
+        return True
+        
+    raise MyException('token illegal')
 
 def cb_dianjoy_ios(request):
 
-    #logger.info('cb_dianjoy_ios request params: ' + ' '.join(request.GET.keys()))
     try:
         snuid = request.GET.get('snuid')
         device_id = request.GET.get('device_id')
@@ -24,6 +34,8 @@ def cb_dianjoy_ios(request):
         ad_name = unquote( request.GET.get('ad_name') )
         pack_name = request.GET.get('pack_name')
         token = request.GET.get('token')
+
+        check_token(time_stamp, token)
 
         logger.info('cb_dianjoy_ios  device_id:' + device_id + '  currency:' + str(currency))
         records = Dianjoy.objects.filter(device_id=device_id, ad_name=ad_name)
@@ -42,7 +54,6 @@ def cb_dianjoy_ios(request):
 
 def cb_dianjoy_android(request):
     
-    #logger.info('cb_dianjoy_android request params: ' + ' '.join(request.GET.keys()))
     try:
         snuid = request.GET.get('snuid')
         device_id = request.GET.get('device_id')
@@ -55,6 +66,8 @@ def cb_dianjoy_android(request):
         task_id = request.GET.get('task_id')
         trade_type = request.GET.get('trade_type')
         token = request.GET.get('token')
+
+        check_token(time_stamp, token, 'android')
 
         logger.info('cb_dianjoy_android  device_id:' + device_id + '  currency:' + str(currency))
         records = Dianjoy.objects.filter(device_id=device_id, ad_name=ad_name)
