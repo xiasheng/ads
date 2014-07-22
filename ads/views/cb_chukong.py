@@ -4,9 +4,14 @@
 from ads.views.common import *
 from ads.models.models import User, PointRecord, Chukong
 from django.http import HttpResponse
+from ads.views.apns import cb_apns_notify
 
 import logging, json
 from urllib import unquote
+
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
 
 logger = logging.getLogger('django')
 
@@ -42,6 +47,8 @@ def cb_chukong_ios(request):
             PointRecord.objects.create(user=user, channel=u'触控', task=adtitle, point=coins, status='ok')
             user.total_points += coins
             user.save()
+
+            cb_apns_notify(user.token, adtitle, coins) 
     finally:
         return HttpResponse('success')
 

@@ -4,9 +4,14 @@
 from ads.views.common import *
 from ads.models.models import User, PointRecord, Waps
 from django.http import HttpResponse
+from ads.views.apns import cb_apns_notify
 
 import logging, json
 from urllib import unquote
+
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
 
 logger = logging.getLogger('django')
 
@@ -42,6 +47,8 @@ def cb_waps_ios(request):
             PointRecord.objects.create(user=user, channel=u'万普', task=ad_name, point=points, status='ok')
             user.total_points += points
             user.save()
+
+            cb_apns_notify(user.token, ad_name, points) 
     finally:
         return SuccessResponse(ret)
 

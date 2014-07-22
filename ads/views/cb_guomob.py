@@ -4,9 +4,14 @@
 from ads.views.common import *
 from ads.models.models import User, PointRecord, Guomob
 from django.http import HttpResponse
+from ads.views.apns import cb_apns_notify
 
 import logging, json
 from urllib import unquote
+
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
 
 logger = logging.getLogger('django')
 
@@ -40,12 +45,9 @@ def cb_guomob_ios(request):
             PointRecord.objects.create(user=user, channel=u'果盟', task=ad, point=points, status='ok')
             user.total_points += points
             user.save()
-            return SuccessResponse(ret)
-        else:
-            ret['message'] = 'duplicate'
-            return SuccessResponse(ret)
-    except:
-        ret['message'] = 'error'
+
+            cb_apns_notify(user.token, ad, points)
+    finally:
         return SuccessResponse(ret)
 
 

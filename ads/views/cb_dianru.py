@@ -4,9 +4,14 @@
 from ads.views.common import *
 from ads.models.models import User, PointRecord, Dianru
 from django.http import HttpResponse
+from ads.views.apns import cb_apns_notify
 
 import logging, json
 from urllib import unquote
+
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
 
 logger = logging.getLogger('django')
 
@@ -38,12 +43,9 @@ def cb_dianru_ios(request):
             PointRecord.objects.create(user=user, channel=u'点入', task=adname, point=point, status='ok')
             user.total_points += point
             user.save()
-            return SuccessResponse(ret)
-        else:
-            ret['message'] = 'duplicate'
-            return SuccessResponse(ret)
-    except:
-        ret['message'] = 'error'
+
+            cb_apns_notify(user.token, adname, point) 
+    finally:
         return SuccessResponse(ret)
 
 

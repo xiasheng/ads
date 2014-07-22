@@ -14,11 +14,13 @@ class User(models.Model):
     total_points = models.IntegerField(default=0)
     password = models.CharField(max_length=128, null=True)
     nickname = models.CharField(max_length=64, default='')
-    type = models.CharField(max_length=32, null=True)
+    version = models.CharField(max_length=32, default='0.0.0')
+    status = models.CharField(max_length=32, default='ok')
+    platform = models.CharField(max_length=32, default='ios')
     is_test = models.BooleanField(default=False)
     is_enable = models.BooleanField(default=True)
     time_created = models.IntegerField(default=Now)
-    
+
     def toJSON(self):
         r = {}
         r['user_id'] = str(self.user_id)
@@ -26,11 +28,12 @@ class User(models.Model):
         r['dev_id'] = self.dev_id
         r['token'] = self.token
         r['nickName'] = self.nickname
-        r['type'] = self.type
+        r['platform'] = self.platform
+        r['version'] = self.version
+        r['status'] = self.status
         r['totalPoints'] = self.total_points
         return r
 
-    
 class PointRecord(models.Model):
     user = models.ForeignKey('User')
     type = models.CharField(max_length=32, default='+')
@@ -445,3 +448,15 @@ class Mopan(models.Model):
         r['appShowName'] = self.appShowName
         return r
 
+class ZhuanPanRecord(models.Model):
+    user = models.ForeignKey('User')
+    point = models.IntegerField(default=0)
+    angle = models.IntegerField(default=0)
+    time_created = models.IntegerField(default=Now)
+
+    def toJSON(self):
+        r = {}
+        r['point'] = self.point
+        r['angle'] = self.angle
+        r['createtime'] = self.time_created
+        return r

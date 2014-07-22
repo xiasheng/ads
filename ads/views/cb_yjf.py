@@ -4,9 +4,14 @@
 from ads.views.common import *
 from ads.models.models import User, PointRecord, Yijifen
 from django.http import HttpResponse
+from ads.views.apns import cb_apns_notify
 
 import logging, json
 from urllib import unquote
+
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
 
 logger = logging.getLogger('django')
 
@@ -38,12 +43,9 @@ def cb_yjf_ios(request):
             PointRecord.objects.create(user=user, channel=u'易积分', task=adName, point=score, status='ok')
             user.total_points += score
             user.save()
-            return SuccessResponse(ret)
-        else:
-            ret['message'] = 'duplicate'
-            return SuccessResponse(ret)
-    except:
-        ret['message'] = 'error'
+
+            cb_apns_notify(user.token, adName, score)  
+    finally:
         return SuccessResponse(ret)
 
 

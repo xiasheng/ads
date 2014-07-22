@@ -4,9 +4,14 @@
 from ads.views.common import *
 from ads.models.models import User, PointRecord, Dianjoy
 from django.http import HttpResponse
+from ads.views.apns import cb_apns_notify
 
 import logging, json
 from urllib import unquote
+
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
 
 logger = logging.getLogger('django')
 
@@ -48,6 +53,8 @@ def cb_dianjoy_ios(request):
             PointRecord.objects.create(user=user, channel=u'点乐', task=ad_name, point=currency, status='ok')
             user.total_points += currency
             user.save()
+
+            cb_apns_notify(user.token, ad_name, currency)
     finally:
         return HttpResponse('200')
 

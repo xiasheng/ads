@@ -231,6 +231,24 @@ def sendNotifyEmail(type, account, cost, amount, host, uid, xid, t):
     content += '<p>' +  u'遇到问题请点击该链接反馈: ' + '<a href=' + url2 + '> <b>' + u'遇到问题' + '</b> </a>' + '</p>'
     notifythread(title, content).start()
 
+def notifyUser(token, record):
+    rtype = record.type
+    account = record.account
+    amount = record.amount
+
+    if rtype == 'MOBILE':
+        data = u'成功充值' + str(amount) + u'元手机 ' + account
+    elif rtype == 'ALIPAY':
+        data = u'成功充值' + str(amount) + u'元到支付宝 ' + account
+    elif rtype == 'QB':
+        data = u'成功充值' + str(amount) + u'QB到QQ ' + account
+    else:
+        return
+
+    from ads.views.apns import apns_notify
+    
+    apns_notify(token, data)
+
 
 def ExConfirm(request):
     ret = {}
@@ -251,6 +269,7 @@ def ExConfirm(request):
             record.status = 'closed'
             record.time_processed  = int(time.time())
             record.save()
+            notifyUser(user.token, record)
             return HttpResponse(u'确认支付成功')
         elif record.status == 'closed':
             return HttpResponse(u'该交易已经结束了哦')

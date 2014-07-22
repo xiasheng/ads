@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from views.helloworld import hello
-from views.user import Init, Update, GetTopUser, RequireAuth, ShowAllUser, SetScore
+from views.user import Init, Update, GetTopUser, RequireAuth, RequireSign, ShowAllUser, SetScore
 from views.channel import GetChannels, InitChannels
 from views.point import GetPoint, GetPointRecord
 from views.version import HasNewVersion
@@ -22,22 +22,24 @@ from views.cb_mopan import cb_mopan_ios, cb_mopan_android, show_mopan
 from views.callback import SyncCallback
 
 from views.statistics import Stat
+from views.apns import TestApns
+from views.game import ZhuanPan
 
 urlpatterns = patterns('',
-
-    url(r'^console$', hello),
+    
+    #url(r'^console$', hello),
     url(r'^user/init/$', Init),
     url(r'^user/update/$', RequireAuth(Update)),
     url(r'^user/showall/$', ShowAllUser),
     url(r'^user/test/setscore/$', RequireAuth(SetScore)),
 
-    url(r'^channels/$', GetChannels),
+    url(r'^channels/$', RequireSign(GetChannels)),
     url(r'^channels/init/$', InitChannels),
     url(r'^score/$', RequireAuth(GetPoint)),
     url(r'^score/records/$', RequireAuth(GetPointRecord)),
 
     url(r'^products/init/$', InitProducts),
-    url(r'^products/query/$', QueryProducts),
+    url(r'^products/query/$', RequireSign(QueryProducts)),
     url(r'^exchange/telphone/$', RequireAuth(ExTelPhone)),
     url(r'^exchange/qb/$', RequireAuth(ExQb)),
     url(r'^exchange/alipay/$', RequireAuth(ExAlipay)),
@@ -45,8 +47,8 @@ urlpatterns = patterns('',
     url(r'^exconfirm/$', ExConfirm),
     url(r'^exproblem/$', ExProblem),
 
-    url(r'^top/score/$', GetTopUser),
-    url(r'^version/hasnew/$', HasNewVersion),
+    url(r'^top/score/$', RequireSign(GetTopUser)),
+    url(r'^version/hasnew/$', RequireSign(HasNewVersion)),
 
     url(r'^callback/adwo/ios$', cb_adwo_ios),
     #url(r'^callback/adwo/android$', cb_adwo_android),
@@ -94,7 +96,10 @@ urlpatterns = patterns('',
 
     url(r'^callback/sync$', SyncCallback),
 
-    url(r'^admin/stat/', Stat)
+    url(r'^admin/stat/', Stat),
+    url(r'^apns/test/', TestApns),
+
+    url(r'^game/zhuanpan/', RequireAuth(ZhuanPan)),
 )
 
 #urlpatterns += staticfiles_urlpatterns()

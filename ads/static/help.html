@@ -1,0 +1,93 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>帮助</title>
+
+<style type="text/css">
+*{margin:0;padding:0;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);list-style-type: none;}
+
+body{ font-family: "微软雅黑", Arial; background:#fff;margin-bottom: 10px;-webkit-text-size-adjust: none;-webkit-touch-callout: none; padding-top:1px;}
+
+.wrap{ background:#fff; height:auto;/* padding-top:45px;*/}
+.banner{margin: 0px 1%;padding:0px 5px;font-size:12px;}
+.offers{margin: 0px 10px;padding:5px 5px;background: #f1f1f1;border: 1px solid #d5d5d5;border-radius:5px;}
+.offers p{line-height:21px;font-size:12px;}
+.zy{background-color:#c11103;border-radius:5px; font-size:16px; text-align:center;font-weight:bold;color:#fff;padding:5px;}
+
+#adsby{/*margin-top: 10px;*//*color: #004E09;*/color: gray;float: right;margin-right: 5px;}
+</style>
+
+    <script type="text/javascript">
+        function close_web(){
+            history.go(-1);
+        }
+    </script>
+
+</head>
+
+<body>
+<div class="wrap" style="padding-top: 0px;">
+<div class="banner" style="padding: 10px; margin-top:8px;margin-bottom: 8px;">
+    您只需免费下载安装并使用一次推荐的应用，即可获得对应的金币奖励。本产品内所有推荐应用均为官方提供的、经过严格测试的绿色优质免费应用，您可以放心安装使用。
+
+</div>
+<div class="offers">
+	<div class="zy">
+    获取金币注意事项
+</div>
+
+    <p>1、您在下载、安装和首次使用推荐应用的过程中，不要关闭当前应用；首次实际使用推荐应用的时间不低于1分钟，才能确保您返回到当前应用时能够立即获得金币。</p>
+    <p>2、如果您安装的推荐应用需要免费注册、登录或阅读许可协议等操作，通常您将在成功登录一次或实际使用一次主要功能后才能获得金币。</p>
+    <p>3、只有安装您之前手机从未安装过的应用才能确保获得金币；获取完成金币后，未再次使用不可轻易删除新安装的推荐应用，否则您今后可能将无法获取更多免费金币。</p>
+    <p>4、系统根据“广告标识符(IDFA)”发放金币，每台设备只能使用一个IDFA。使用本应用期间，切勿执行“恢复出厂设置”或“还原广告标识符”操作，否则将导致本设备永久无法再获得金币。</p>
+    <p>5、如果遇到网络不通等原因导致安装完成未能立即获得金币，可选择下载其他应用，或隔日再试。</p>
+    <p>6、关于本产品的任何问题或疑问，可随时通过“问题反馈”功能向我们反馈您遇到的问题。</p>
+    <p>7、严禁任何色情违法应用使用此功能。如果您发现违法应用盗用该功能，请通过“问题反馈”功能进行举报。</p>
+</div>
+
+<div style=" margin:3px 1%;margin-bottom:10px;">
+
+    <div id="adsby">
+
+    </div>
+</div>
+
+<div class="clear"></div>
+</div>
+<script charset='utf-8' type='text/javascript'>
+    window.onload = init;
+    window.onscroll = scroll;
+    document.body.ontouchmove = scroll;
+
+    function init() {
+        window.setTimeout(scroll, 0);
+    }
+
+    function scroll() {
+        images = document.getElementsByTagName('img');
+        for (var i = 0, image; image = images[i]; i++) {
+            if (window.scrollY + window.innerHeight + 480 > image.offsetTop) {
+                loadImage(image);
+            }
+        }
+    }
+
+    function loadImage(image) {
+        if (image.getAttribute('s') && image.src != image.getAttribute('s')) {
+            image.src = image.getAttribute('s');
+//            image.style="width:40px;height:40px;"
+
+        }
+    }
+
+</script>
+</body>
+</html>
+

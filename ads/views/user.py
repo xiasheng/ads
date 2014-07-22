@@ -3,7 +3,12 @@
 from ads.views.common import *
 from ads.models.models import User
 from django.conf import settings
-import random
+from django.core.cache import cache
+import random, hashlib
+
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
 
 def generateUserId():
     id = 0
@@ -19,18 +24,20 @@ def generateUserId():
 def checkParam(mac, dev_id, token):
     return True
 
-def checkSign(type, dev_id, nonce, sign):
-    if type == 'ios':
-        appkey = settings.APPKEY_IOS
-    elif type == 'android':    
-        appkey = settings.APPKEY_ANDROID
-    else:
-        raise MyException(info='sign error')
-        
-    if sign == hashlib.md5(appkey + dev_id + nonce).digest():
-        return True
-    raise MyException(info='sign error')
 
+def checkSign(dev_id, nonce, sign):
+    appkey = settings.APPKEY_IOS
+    
+    if cache.get(sign) is None and sign == hashlib.md5(nonce + dev_id + appkey).hexdigest():
+        cache.set(sign, True, 24 * 60 * 60)
+        return True
+
+    raise MyException(info='sign error') 
+
+def isAppStoreChecking(version):
+    if version == '1.1.1':
+        return True
+    return False      
 
 def Init(request):
     ret = {}
@@ -38,26 +45,37 @@ def Init(request):
     try:
         mac = request.POST.get('mac', '112233445566')
         dev_id = request.POST.get('dev_id')
-        token = request.POST.get('token', '88888888')
-        nonce = request.POST.get('nonce', '123456')
-        type = request.POST.get('type', 'ios')
-        sign = request.POST.get('sign', '123456')
+        nonce = request.POST.get('nonce')
+        token = request.POST.get('token')
+        version = request.POST.get('version', '0.0.0')
+        platform = request.POST.get('platform', 'ios')
+        cs = request.POST.get('cs')
 
         checkParam(mac, dev_id, token)
-        
-        #checkSign(type, dev_id, nonce, sign)
-        
+
+        checkSign(dev_id, nonce, cs)
+
         users =  User.objects.filter(dev_id=dev_id)
         if len(users) > 0:
             user = users[0]
+            if user.token != token:
+                user.token=token
+                user.save()
         else:
             user_id = generateUserId()
-            user = User.objects.create(user_id=user_id, mac=mac, dev_id=dev_id, token=token, type=type)
+            user = User.objects.create(user_id=user_id, mac=mac, dev_id=dev_id, token=token, version=version, platform=platform)
 
         ret['user'] = user.toJSON()
+        
+        if isAppStoreChecking(version):
+            ret['user']['checking'] = True
+        else:
+            ret['user']['checking'] = False  
+        
         return SuccessResponse(ret)
     except:
         return ErrorResponse(E_PARAM)
+
 
 
 def Update(request):
@@ -89,20 +107,37 @@ def RequireAuth(view):
             #mac = request.REQUEST.get('mac')
             dev_id = request.REQUEST.get('dev_id')
             #token = request.REQUEST.get('token')
-            nonce = request.POST.get('nonce', '123456')
-            sign = request.POST.get('sign', '123456')
+            nonce = request.REQUEST.get('nonce')
+            cs = request.REQUEST.get('cs')
 
             user = User.objects.get(user_id=user_id, dev_id=dev_id)
 
-            #checkSign(user.type, dev_id, nonce, sign)
+            checkSign(dev_id, nonce, cs)
             
             request.META['USER'] = user
             return view(request, *args, **kwargs)
 
-        except :
+        except:
             return ErrorResponse(E_AUTH)
 
     return new_view   
+
+
+def RequireSign(view):
+    def new_view(request, *args, **kwargs):
+
+        try:
+            dev_id = request.REQUEST.get('dev_id')
+            nonce = request.REQUEST.get('nonce')
+            cs = request.REQUEST.get('cs')
+
+            checkSign(dev_id, nonce, cs)
+
+            return view(request, *args, **kwargs)
+        except:
+            return ErrorResponse(E_AUTH)
+
+    return new_view
 
 
 def SetScore(request):

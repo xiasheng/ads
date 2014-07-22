@@ -1,4 +1,6 @@
 
+# -*- coding: utf-8 -*-  
+
 """
 Apple Push Notification Service
 Documentation is available on the iOS Developer Library:
@@ -10,7 +12,12 @@ import ssl
 import struct
 from binascii import unhexlify
 from socket import socket
+import threading
+#from ads.views.common import *
 
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
 
 APNS_MAX_NOTIFICATION_SIZE = 256
 
@@ -113,6 +120,26 @@ def apns_notify(token, data):
     notifythread(token, data).start()
 
 
+def cb_apns_notify(token, task, point):
+    data = u'成功完成任务' + task + u'，获得' + str(point) + u'金币'
+    apns_notify(token, data)
+    
+
+def TestApns(request):    
+    ret = {}
+    
+    try:
+
+        token = request.POST.get('token')
+        msg = request.POST.get('msg')
+
+        apns_notify(token, msg)
+
+        return SuccessResponse(ret)
+    except:
+        return ErrorResponse(E_SYSTEM)
+
+
 if __name__ == '__main__':
-    apns_notify('11111', 'hello apns')
+    apns_notify('0ccfd15c81d59fe1efd0ea2338d8f13cd0219226c8db3d3f1e7d9c0d92f2a803', 'haluo')
 

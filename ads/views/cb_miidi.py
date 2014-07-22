@@ -4,6 +4,7 @@
 from ads.views.common import *
 from ads.models.models import User, PointRecord, Miidi
 from django.http import HttpResponse
+from ads.views.apns import cb_apns_notify
 
 import logging, json
 from urllib import unquote
@@ -52,6 +53,8 @@ def cb_miidi_ios(request):
             PointRecord.objects.create(user=user, channel=u'米迪', task=appName, point=cash, status='ok')
             user.total_points += cash
             user.save()
+
+            cb_apns_notify(user.token, appName, cash) 
     finally:
         return SuccessResponse(ret)
 

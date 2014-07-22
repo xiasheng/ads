@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response
 
 
 def hello(request):
-    #return HttpResponse("Hello world " + request.get_host())
+    return render_to_response('index.html')
 
     try:
         username = request.POST.get('username')

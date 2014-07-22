@@ -4,6 +4,7 @@
 from ads.views.common import *
 from ads.models.models import User, PointRecord, Domob
 from django.http import HttpResponse
+from ads.views.apns import cb_apns_notify
 
 import logging, json
 from urllib import unquote
@@ -57,6 +58,8 @@ def cb_domob_ios(request):
             PointRecord.objects.create(user=user, channel=u'多盟', task=ad, point=point, status='ok')
             user.total_points += point
             user.save()
+
+            cb_apns_notify(user.token, ad, point)  
     finally:
         return SuccessResponse(ret)
 

@@ -4,6 +4,7 @@
 from ads.views.common import *
 from ads.models.models import User, PointRecord, Youmi
 from django.http import HttpResponse
+from ads.views.apns import cb_apns_notify
  
 import logging, json
 from urllib import unquote
@@ -15,7 +16,8 @@ sys.setdefaultencoding( "utf-8" )
 logger = logging.getLogger('django')
  
 def check_sign(param, sign):
-    sk = '1ba4555d3feebded'
+    #sk = '1ba4555d3feebded'
+    sk = '9cd30353ccfd0e90'
     
     import hashlib
     if hashlib.md5(param+sk).hexdigest() == sign:
@@ -56,6 +58,8 @@ def cb_youmi_ios(request):
             PointRecord.objects.create(user=user, channel=u'有米', task=ad, point=point, status='ok')
             user.total_points += point
             user.save()
+
+            cb_apns_notify(user.token, ad, point)
     finally:
         return HttpResponse('success')
 

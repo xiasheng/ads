@@ -4,6 +4,7 @@
 from ads.views.common import *
 from ads.models.models import User, PointRecord, Mopan
 from django.http import HttpResponse
+from ads.views.apns import cb_apns_notify
 
 import logging, json
 from urllib import unquote
@@ -48,6 +49,8 @@ def cb_mopan_ios(request):
             PointRecord.objects.create(user=user, channel=u'磨盘', task=appShowName, point=cash, status='ok')
             user.total_points += cash
             user.save()
+
+            cb_apns_notify(user.token, appShowName, cash) 
     finally:
         return HttpResponse('success')
 

@@ -4,7 +4,8 @@
 from ads.views.common import *
 from ads.models.models import User, PointRecord, Adwo
 from django.http import HttpResponse
- 
+from ads.views.apns import cb_apns_notify 
+
 import logging, json
 from urllib import unquote
 
@@ -50,6 +51,8 @@ def cb_adwo_ios(request):
             PointRecord.objects.create(user=user, channel=u'安沃', task=adname, point=point, status='ok')
             user.total_points += point
             user.save()
+
+            cb_apns_notify(user.token, adname, point)
     finally:
         return HttpResponse('success')
 
