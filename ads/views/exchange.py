@@ -188,7 +188,7 @@ def ExRecord(request):
 
     try:
         user = request.META['USER']
-        records = ExchangeRecord.objects.filter(user=user)
+        records = ExchangeRecord.objects.filter(user=user).order_by('-id')
 
         for r in records:
             ret['records'].append(r.toJSON())
@@ -237,7 +237,7 @@ def notifyUser(token, record):
     amount = record.amount
 
     if rtype == 'MOBILE':
-        data = u'成功充值' + str(amount) + u'元手机 ' + account
+        data = u'成功充值' + str(amount) + u'元到手机 ' + account
     elif rtype == 'ALIPAY':
         data = u'成功充值' + str(amount) + u'元到支付宝 ' + account
     elif rtype == 'QB':

@@ -24,6 +24,8 @@ from views.callback import SyncCallback
 from views.statistics import Stat
 from views.apns import TestApns
 from views.game import ZhuanPan
+from views.qiubai import Spider, QiuShi
+
 
 urlpatterns = patterns('',
     
@@ -100,6 +102,9 @@ urlpatterns = patterns('',
     url(r'^apns/test/', TestApns),
 
     url(r'^game/zhuanpan/', RequireAuth(ZhuanPan)),
+
+    url(r'^spider/qiubai/', Spider),
+    url(r'^duanzi/qiushi/', QiuShi),
 )
 
 #urlpatterns += staticfiles_urlpatterns()

@@ -19,7 +19,7 @@ def ZhuanPan(request):
         
         c = ZhuanPanRecord.objects.filter(time_created__gt=t_begin).filter(time_created__lt=t_end).count()
         if c >= 10:
-            ret['angle'] = 0
+            ret['angle'] = 12
             ret['score'] = 0
             ret['cooltime'] = 60 * 60
             ret['status'] = 1;  
@@ -39,6 +39,7 @@ def ZhuanPan(request):
         ZhuanPanRecord.objects.create(user=user, point=zp[r], angle=r)
         
         user.total_points += zp[r]
+        user.save()
 
         return SuccessResponse(ret)
     except:

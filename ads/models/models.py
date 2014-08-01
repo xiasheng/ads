@@ -460,3 +460,19 @@ class ZhuanPanRecord(models.Model):
         r['angle'] = self.angle
         r['createtime'] = self.time_created
         return r
+
+
+class QiuBai(models.Model):
+    qid = models.CharField(max_length=32, default='')
+    content = models.CharField(max_length=1024, default='')
+    image = models.CharField(max_length=256, default='')
+    time_created = models.IntegerField(default=Now)
+
+    def toJSON(self):
+        r = {}
+        r['id'] = self.id
+        r['content'] = self.content
+        r['image'] = self.image
+        #r['createtime'] = self.time_created
+        return r
+

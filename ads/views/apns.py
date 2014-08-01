@@ -7,13 +7,14 @@ Documentation is available on the iOS Developer Library:
 https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html
 """
 
+import logging
 import json
 import ssl
 import struct
 from binascii import unhexlify
 from socket import socket
 import threading
-#from ads.views.common import *
+from ads.views.common import *
 
 import sys
 reload(sys)
@@ -21,9 +22,14 @@ sys.setdefaultencoding( "utf-8" )
 
 APNS_MAX_NOTIFICATION_SIZE = 256
 
-APNS_CERTIFICATE = '/var/www/ads/ads/mm_apns.pem'
-APNS_HOST = 'gateway.sandbox.push.apple.com'
-#APNS_HOST = 'gateway.push.apple.com'
+#DEBUG
+#APNS_CERTIFICATE = '/var/www/ads/ads/mm_apns_debug.pem'
+#APNS_HOST = 'gateway.sandbox.push.apple.com'
+#APNS_PORT = 2195
+
+#RELEASE
+APNS_HOST = 'gateway.push.apple.com'
+APNS_CERTIFICATE = '/var/www/ads/ads/mm_apns_release.pem'
 APNS_PORT = 2195
 
 class APNSError():
