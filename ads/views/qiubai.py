@@ -45,14 +45,14 @@ class SpiderThread(threading.Thread):
                   pass
                   
           page += 1
-          time.sleep(10)        
+          time.sleep(3)        
         
 
 def Spider(request):
     ret = {}
 
     maxnum = int( request.GET.get('num', 100) )
-    maxpage = int( request.GET.get('page', 50) )
+    maxpage = int( request.GET.get('page', 100) )
 
     SpiderThread(maxnum, maxpage).start()
     
