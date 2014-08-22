@@ -17,7 +17,7 @@ def ZhuanPan(request):
         t_begin = t_now - 24 * 3600
         t_end = t_now
         
-        c = ZhuanPanRecord.objects.filter(time_created__gt=t_begin).filter(time_created__lt=t_end).count()
+        c = ZhuanPanRecord.objects.filter(user=user, time_created__gt=t_begin).filter(time_created__lt=t_end).count()
         if c >= 10:
             ret['angle'] = 12
             ret['score'] = 0
@@ -40,6 +40,20 @@ def ZhuanPan(request):
         
         user.total_points += zp[r]
         user.save()
+
+        return SuccessResponse(ret)
+    except:
+        return ErrorResponse(E_SYSTEM)
+
+def GetGameRecord(request):
+    ret = {}
+    ret['records'] = []
+
+    try:
+        records = ZhuanPanRecord.objects.filter(user=request.META['USER']).order_by('-id')
+
+        for r in records:
+            ret['records'].append(r.toJSON())
 
         return SuccessResponse(ret)
     except:

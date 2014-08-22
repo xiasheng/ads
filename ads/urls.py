@@ -25,7 +25,7 @@ from views.callback import SyncCallback
 
 from views.statistics import Stat
 from views.apns import TestApns
-from views.game import ZhuanPan
+from views.game import ZhuanPan, GetGameRecord
 from views.qiubai import Spider, QiuShi
 
 from django.contrib import admin
@@ -122,6 +122,7 @@ urlpatterns = patterns('',
     url(r'^apns/test/', TestApns),
 
     url(r'^game/zhuanpan/', RequireAuth(ZhuanPan)),
+    url(r'^game/records/$', RequireAuth(GetGameRecord)),
 
     url(r'^spider/qiubai/', Spider),
     url(r'^duanzi/qiushi/', QiuShi),

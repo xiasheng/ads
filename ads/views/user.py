@@ -35,7 +35,7 @@ def checkSign(dev_id, nonce, sign):
     raise MyException(info='sign error') 
 
 def isAppStoreChecking(version):
-    if version == '1.1.1':
+    if version == '1.0.0':
         return True
     return False      
 
