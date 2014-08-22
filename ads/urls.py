@@ -1,9 +1,11 @@
 
+# -*- coding: utf-8 -*- 
+
 from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from views.helloworld import hello
-from views.user import Init, Update, GetTopUser, RequireAuth, RequireSign, ShowAllUser, SetScore
+from views.user import Init, Update, GetTopUser, RequireAuth, RequireSign, ShowAllUser, SetScore, CreateTestUsers
 from views.channel import GetChannels, InitChannels
 from views.point import GetPoint, GetPointRecord
 from views.version import HasNewVersion
@@ -26,14 +28,32 @@ from views.apns import TestApns
 from views.game import ZhuanPan
 from views.qiubai import Spider, QiuShi
 
+from django.contrib import admin
 
+def disableDefaultAdmin():
+    from django.contrib.auth.models import User
+    #from django.contrib.sites.models import Site
+    from django.contrib.auth.models import Group
+
+    admin.site.unregister(User)
+    admin.site.unregister(Group)
+    #admin.site.unregister(Site)
+
+
+admin.autodiscover()
+disableDefaultAdmin()
+
+from urllib import unquote
 urlpatterns = patterns('',
     
-    #url(r'^console$', hello),
+    (r'^admin/', include(admin.site.urls)),
+
+    #url(r'^hello$', hello),
     url(r'^user/init/$', Init),
     url(r'^user/update/$', RequireAuth(Update)),
     url(r'^user/showall/$', ShowAllUser),
     url(r'^user/test/setscore/$', RequireAuth(SetScore)),
+    url(r'user/test/create/', CreateTestUsers),
 
     url(r'^channels/$', RequireSign(GetChannels)),
     url(r'^channels/init/$', InitChannels),

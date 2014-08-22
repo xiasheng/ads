@@ -1,24 +1,26 @@
 
+# -*- coding: utf-8 -*-  
 
 from django.db import models
 import time
+
 
 def Now():
     return int(time.time())
 
 class User(models.Model):
-    user_id = models.IntegerField(primary_key=True)
-    dev_id = models.CharField(max_length=128)
+    user_id = models.IntegerField(primary_key=True, verbose_name = u'用户ID')
+    dev_id = models.CharField(max_length=128, verbose_name = u'设备ID')
     mac = models.CharField(max_length=128)
     token = models.CharField(max_length=128)
-    total_points = models.IntegerField(default=0)
+    total_points = models.IntegerField(default=0, verbose_name = u'总积分')
     password = models.CharField(max_length=128, null=True)
     nickname = models.CharField(max_length=64, default='')
     version = models.CharField(max_length=32, default='0.0.0')
     status = models.CharField(max_length=32, default='ok')
     platform = models.CharField(max_length=32, default='ios')
     is_test = models.BooleanField(default=False)
-    is_enable = models.BooleanField(default=True)
+    is_enable = models.BooleanField(default=True, verbose_name = u'账号状态')
     time_created = models.IntegerField(default=Now)
 
     def toJSON(self):
@@ -34,13 +36,22 @@ class User(models.Model):
         r['totalPoints'] = self.total_points
         return r
 
+    def __unicode__(self):
+        return str(self.user_id)
+
+    class Meta:
+        verbose_name = u'用户'
+        verbose_name_plural = u'用户'
+        #app_label = u'用户管理'
+        #db_table = 'models_user'
+
 class PointRecord(models.Model):
-    user = models.ForeignKey('User')
-    type = models.CharField(max_length=32, default='+')
-    channel = models.CharField(max_length=64, default='')
-    task = models.CharField(max_length=256, default='')
-    point = models.IntegerField(default=0)
-    status = models.CharField(max_length=32, default='')
+    user = models.ForeignKey('User', verbose_name = u'用户ID')
+    type = models.CharField(max_length=32, default='+', verbose_name = u'类型')
+    channel = models.CharField(max_length=64, default='', verbose_name = u'广告平台')
+    task = models.CharField(max_length=256, default='', verbose_name = u'任务名称')
+    point = models.IntegerField(default=0, verbose_name = u'积分')
+    status = models.CharField(max_length=32, default='', verbose_name = u'状态')
     time_created = models.IntegerField(default=Now)    
     
     def toJSON(self):
@@ -52,15 +63,20 @@ class PointRecord(models.Model):
         r['status'] = self.status
         r['createtime'] = self.time_created
         return r
-        
-            
+
+    class Meta:
+        verbose_name = u'积分记录'
+        verbose_name_plural = u'积分记录'
+        #app_label = u'数据统计'
+        #db_table = 'models_pointrecord' 
+
 class ExchangeRecord(models.Model):
-    user = models.ForeignKey('User')
-    type = models.CharField(max_length=32)
-    account = models.CharField(max_length=128, null=True)
-    cost = models.IntegerField(default=0)
-    amount = models.IntegerField(default=0)
-    status = models.CharField(max_length=32)
+    user = models.ForeignKey('User', verbose_name = u'用户ID')
+    type = models.CharField(max_length=32, verbose_name = u'兑换类型')
+    account = models.CharField(max_length=128, null=True, verbose_name = u'账号')
+    cost = models.IntegerField(default=0, verbose_name = u'消费积分')
+    amount = models.IntegerField(default=0, verbose_name = u'兑换金额')
+    status = models.CharField(max_length=32, verbose_name = u'状态')
     description = models.CharField(max_length=256, null=True)
     xid = models.CharField(max_length=64, null=True)
     time_created = models.IntegerField(default=Now)
@@ -77,12 +93,18 @@ class ExchangeRecord(models.Model):
         r['processingTime'] = self.time_processed
         return r
 
+    class Meta:
+        verbose_name = u'兑换记录'
+        verbose_name_plural = u'兑换记录'
+        #app_label = u'数据统计' 
+        #db_table = 'models_exchangerecord'
+
 class ExchangeProduct(models.Model):
-    code = models.CharField(max_length=64)
-    name = models.CharField(max_length=64, null=True)
-    price = models.IntegerField(default=0)
-    score = models.IntegerField(default=0)
-    info = models.CharField(max_length=64)
+    code = models.CharField(max_length=64, verbose_name = u'产品代号')
+    name = models.CharField(max_length=64, null=True, verbose_name=u'类型')
+    price = models.IntegerField(default=0, verbose_name = u'价格')
+    score = models.IntegerField(default=0, verbose_name = u'积分')
+    info = models.CharField(max_length=64, verbose_name = u'描述')
     typeName = models.CharField(max_length=64, null=True)
     typeCode = models.CharField(max_length=64, null=True)
     typeLabel = models.CharField(max_length=64, null=True)
@@ -98,15 +120,19 @@ class ExchangeProduct(models.Model):
         r['typeCode'] = self.typeCode
         r['typeLabel'] = self.typeLabel
         return r
+
+    class Meta:
+        verbose_name = u'兑换产品'
+        verbose_name_plural = u'兑换产品'
             
 class Channel(models.Model):
     code = models.CharField(max_length=64, null=True)
-    description = models.CharField(max_length=1024, null=True)
-    name = models.CharField(max_length=64, null=True)
+    description = models.CharField(max_length=1024, null=True, verbose_name = u'描述')
+    name = models.CharField(max_length=64, null=True, verbose_name = u'名称')
     image = models.CharField(max_length=128, null=True)
-    order = models.IntegerField(default=0)
+    order = models.IntegerField(default=0, verbose_name = u'优先级')
     tasknum = models.IntegerField(default=10)
-    is_enable = models.BooleanField(default=True)
+    is_enable = models.BooleanField(default=True, verbose_name = u'激活状态')
 
     def toJSON(self):
         r = {}
@@ -117,6 +143,11 @@ class Channel(models.Model):
         r['name'] = self.name
         r['image'] = self.image 
         return r
+
+    class Meta:
+        verbose_name = u'广告平台'
+        verbose_name_plural = u'广告平台'
+        ordering=['order']
 
 class Adwo(models.Model):
     type = models.CharField(max_length=32, null=True)

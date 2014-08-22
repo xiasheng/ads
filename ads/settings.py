@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-  
+
 """
 Django settings for ads project.
 
@@ -20,9 +22,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '1iayimapuw%no6g%%6o0_79*h3x))@s@7fetjqfgmvhr14t(+n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-TEMPLATE_DEBUG = False
+TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -30,25 +32,33 @@ TEMPLATE_DIRS = (
     '/var/www/ads/ads/templates',
 )
 
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+
+TEMPLATE_CONTEXT_PROCESSORS = TCP + (
+    'django.core.context_processors.request',
+)
+
 # Application definition
 
 INSTALLED_APPS = (
     'ads.models',
-    #'django.contrib.admin',
-    #'django.contrib.auth',
-    #'django.contrib.contenttypes',
-    #'django.contrib.sessions',
-    #'django.contrib.messages',
+    'suit',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
     'django.contrib.staticfiles',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.http.ConditionalGetMiddleware',
-    #'django.contrib.sessions.middleware.SessionMiddleware',
-    #'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware',
-    #'django.contrib.auth.middleware.AuthenticationMiddleware',
-    #'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
@@ -75,8 +85,9 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'zh-cn'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -154,3 +165,28 @@ EMAIL_RECIPIENTS=['xia.sheng@d-connected.com', 'zhang.shengrong@d-connected.com'
 #app key
 APPKEY_ANDROID = 'BOglTuO6OppR5Q5B7yQDbrF6GrO9ZECM'
 APPKEY_IOS = 'AqcxTiwgD7d46vFnZ0Gh7o4BS31lGoKg'
+
+
+
+
+SUIT_CONFIG = {
+    # header
+    'ADMIN_NAME': u'钱庄管理后台',
+    'HEADER_DATE_FORMAT': 'Y/n/j  l',
+    'HEADER_TIME_FORMAT': 'H:i',
+
+    'MENU': (
+
+        {'label': u'用户管理', 'icon':'icon-lock', 'models': ('models.user', )},
+
+        {'label': u'数据统计', 'icon':'icon-cog', 'models': ('models.pointrecord', 'models.exchangerecord')},
+
+        {'label': u'产品管理', 'icon':'icon-cog', 'models': ('models.exchangeproduct', 'models.channel')},
+        # Separator
+        '-',
+
+    ),
+
+    # 'LIST_PER_PAGE': 15
+}
+

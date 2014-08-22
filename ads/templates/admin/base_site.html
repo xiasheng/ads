@@ -1,0 +1,49 @@
+
+{% extends "admin/base.html" %}
+{% load admin_static %}
+
+{# {#Additional <head> content here #}
+{% block extrahead %}
+    {{ block.super }}
+{% endblock %}
+
+
+{# Additional <head> content here, some extra meta tags or favicon #}
+{#{% block extrahead %}#}
+{#{% endblock %}#}
+
+
+{# Additional CSS includes #}
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/examples.css' %}" media="all">
+{% endblock %}
+
+
+{# Additional JS files in footer, right before </body> #}
+{#{% block extrajs %}#}
+{#  <script type="text/javascript" src="{% static 'js/my_project.js' %}"></script>#}
+{#{% endblock %}#}
+
+
+{# Footer links (left side)
+{% block footer_links %}
+{% endblock %}
+
+
+{# Footer branding name (center) #}
+{% block footer_branding %}
+&copy; 2014  Developed by <a href="http://www.d-connected.com" target="_blank">连接科技</a>
+{% endblock %}
+
+
+{# Footer copyright (right side) #}
+{% block copyright %}
+{% endblock %}
+
+
+{% block header_content %}
+    {{ block.super }}
+{% endblock %}
+
+
+
