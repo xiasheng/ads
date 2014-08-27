@@ -25,8 +25,14 @@ def checkParam(mac, dev_id, token):
     return True
 
 
-def checkSign(dev_id, nonce, sign):
-    appkey = settings.APPKEY_IOS
+def checkSign(dev_id, nonce, sign, platform):
+
+    if platform == 'ios':
+        appkey = settings.APPKEY_IOS
+    elif platform == 'android':
+        appkey = settings.APPKEY_ANDROID
+    else:
+        raise MyException(info='sign error')
     
     if cache.get(sign) is None and sign == hashlib.md5(nonce + dev_id + appkey).hexdigest():
         cache.set(sign, True, 24 * 60 * 60)
@@ -46,14 +52,14 @@ def Init(request):
         mac = request.POST.get('mac', '112233445566')
         dev_id = request.POST.get('dev_id')
         nonce = request.POST.get('nonce')
-        token = request.POST.get('token')
+        token = request.POST.get('token', '112233445566')
         version = request.POST.get('version', '0.0.0')
         platform = request.POST.get('platform', 'ios')
         cs = request.POST.get('cs')
 
         checkParam(mac, dev_id, token)
 
-        checkSign(dev_id, nonce, cs)
+        checkSign(dev_id, nonce, cs, platform)
 
         users =  User.objects.filter(dev_id=dev_id)
         if len(users) > 0:
@@ -109,10 +115,11 @@ def RequireAuth(view):
             #token = request.REQUEST.get('token')
             nonce = request.REQUEST.get('nonce')
             cs = request.REQUEST.get('cs')
+            platform = request.POST.get('platform', 'ios')
 
             user = User.objects.get(user_id=user_id, dev_id=dev_id)
 
-            checkSign(dev_id, nonce, cs)
+            checkSign(dev_id, nonce, cs, platform)
             
             request.META['USER'] = user
             return view(request, *args, **kwargs)
@@ -130,8 +137,9 @@ def RequireSign(view):
             dev_id = request.REQUEST.get('dev_id')
             nonce = request.REQUEST.get('nonce')
             cs = request.REQUEST.get('cs')
+            platform = request.POST.get('platform', 'ios')
 
-            checkSign(dev_id, nonce, cs)
+            checkSign(dev_id, nonce, cs, platform)
 
             return view(request, *args, **kwargs)
         except:

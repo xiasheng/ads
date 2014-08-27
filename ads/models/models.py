@@ -507,3 +507,39 @@ class QiuBai(models.Model):
         #r['createtime'] = self.time_created
         return r
 
+class Duiba(models.Model):
+    appKey = models.CharField(max_length=64, null=True)
+    timestamp  = models.CharField(max_length=64, null=True)
+    uid = models.CharField(max_length=64, null=True)
+    credits = models.IntegerField(default=0)
+    description = models.CharField(max_length=128, null=True, default='')
+    orderNum = models.CharField(max_length=128, null=True)
+    dtype = models.CharField(max_length=64, null=True)
+    facePrice = models.IntegerField(default=0)
+    actualPrice = models.IntegerField(default=0)
+    alipay = models.CharField(max_length=128, null=True, default='')
+    phone = models.CharField(max_length=128, null=True, default='')
+    qq = models.CharField(max_length=128, null=True, default='')
+    waitAudit = models.BooleanField(default=False)
+    status = models.CharField(max_length=128, null=True, default='')
+    message = models.CharField(max_length=128, null=True, default='')
+    time_created = models.IntegerField(default=Now)
+
+    def toJSON(self):
+        r = {}
+        r['timestamp'] = self.timestamp
+        r['uid'] = self.uid
+        r['credits'] = self.credits
+        r['description'] = self.description
+        r['orderNum'] = self.orderNum
+        r['type'] = self.dtype
+        r['facePrice'] = self.facePrice
+        r['actualPrice'] = self.actualPrice
+        r['alipay'] = self.alipay
+        r['phone'] = self.phone
+        r['qq'] = self.qq
+        r['waitAudit'] = self.waitAudit
+        r['status'] = self.status
+        r['message'] = self.message
+
+        return r

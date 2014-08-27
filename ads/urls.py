@@ -27,6 +27,7 @@ from views.statistics import Stat
 from views.apns import TestApns
 from views.game import ZhuanPan, GetGameRecord
 from views.qiubai import Spider, QiuShi
+from views.duiba import QueryCredit, ConsumeCredit, ResultCredit
 
 from django.contrib import admin
 
@@ -46,7 +47,7 @@ disableDefaultAdmin()
 from urllib import unquote
 urlpatterns = patterns('',
     
-    (r'^admin/', include(admin.site.urls)),
+    (r'^51admin/', include(admin.site.urls)),
 
     #url(r'^hello$', hello),
     url(r'^user/init/$', Init),
@@ -73,47 +74,47 @@ urlpatterns = patterns('',
     url(r'^version/hasnew/$', RequireSign(HasNewVersion)),
 
     url(r'^callback/adwo/ios$', cb_adwo_ios),
-    #url(r'^callback/adwo/android$', cb_adwo_android),
+    url(r'^callback/adwo/android$', cb_adwo_android),
     url(r'^callback/adwo/show$', show_adwo),
 
     url(r'^callback/youmi/ios$', cb_youmi_ios),
-    #url(r'^callback/youmi/android$', cb_youmi_android),
+    url(r'^callback/youmi/android$', cb_youmi_android),
     url(r'^callback/youmi/show$', show_youmi),
 
     url(r'^callback/yjf/ios$', cb_yjf_ios),
-    #url(r'^callback/yjf/android$', cb_yjf_android),
+    url(r'^callback/yjf/android$', cb_yjf_android),
     url(r'^callback/yjf/show$', show_yjf),
 
     url(r'^callback/dianru/ios$', cb_dianru_ios),
-    #url(r'^callback/dianru/android$', cb_dianru_android),
+    url(r'^callback/dianru/android$', cb_dianru_android),
     url(r'^callback/dianru/show$', show_dianru),
 
     url(r'^callback/domob/ios$', cb_domob_ios),
-    #url(r'^callback/domob/android$', cb_domob_android),
+    url(r'^callback/domob/android$', cb_domob_android),
     url(r'^callback/domob/show$', show_domob),
 
     url(r'^callback/guomob/ios$', cb_guomob_ios),
-    #url(r'^callback/guomob/android$', cb_guomob_android),
+    url(r'^callback/guomob/android$', cb_guomob_android),
     url(r'^callback/guomob/show$', show_guomob),
 
     url(r'^callback/waps/ios$', cb_waps_ios),
-    #url(r'^callback/waps/android$', cb_waps_android),
+    url(r'^callback/waps/android$', cb_waps_android),
     url(r'^callback/waps/show$', show_waps),
 
     url(r'^callback/miidi/ios$', cb_miidi_ios),
-    #url(r'^callback/miidi/android$', cb_miidi_android),
+    url(r'^callback/miidi/android$', cb_miidi_android),
     url(r'^callback/miidi/show$', show_miidi),
 
     url(r'^callback/dianjoy/ios$', cb_dianjoy_ios),
-    #url(r'^callback/dianjoy/android$', cb_dianjoy_android),
+    url(r'^callback/dianjoy/android$', cb_dianjoy_android),
     url(r'^callback/dianjoy/show$', show_dianjoy),
 
     url(r'^callback/chukong/ios$', cb_chukong_ios),
-    #url(r'^callback/chukong/android$', cb_chukong_android),
+    url(r'^callback/chukong/android$', cb_chukong_android),
     url(r'^callback/chukong/show$', show_chukong),
 
     url(r'^callback/mopan/ios$', cb_mopan_ios),
-    #url(r'^callback/mopan/android$', cb_mopan_android),
+    url(r'^callback/mopan/android$', cb_mopan_android),
     url(r'^callback/mopan/show$', show_mopan), 
 
     url(r'^callback/sync$', SyncCallback),
@@ -126,6 +127,9 @@ urlpatterns = patterns('',
 
     url(r'^spider/qiubai/', Spider),
     url(r'^duanzi/qiushi/', QiuShi),
+    url(r'^duiba/query/', QueryCredit),
+    url(r'^duiba/consume/', ConsumeCredit),
+    url(r'^duiba/result/', ResultCredit),
 )
 
 #urlpatterns += staticfiles_urlpatterns()
